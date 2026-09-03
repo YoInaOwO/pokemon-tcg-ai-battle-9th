@@ -28,6 +28,10 @@ An **archetype** is a family of lists sharing a core, so anything built around D
 
 The network is shown below.
 
+![Model architecture](writeup_fig1_arch.png)
+
+*Model architecture*
+
 **Tokens.** The observation becomes a 64-token sequence: global, select context and stadium, 18 board slots, 30 hand slots, 8 "looking" slots, two discard bags, a log summary, a game-memory token, and a bag of my own unseen deck. Every card slot is a **CardRepr**: a learned id embedding plus a projection of the card's static features, HP, type, stage, ex flags, and a hand-audited schema of its Ability and attack text. The id half is randomly dropped per slot in training, so a rare card still reads from its text. A 5-layer pre-LN transformer (d = 384) encodes the sequence into the pooled state *h*.
 
 **Options are first-class.** Each legal option gets its own embedding, built from its feature vector plus the card, target and attack it refers to. That embedding cross-attends to the state tokens, so an option meaning "target bench slot 3" reads the live HP and Energy of that slot. Scoring is `logit = MLP([opt, h, opt ⊙ h])`, and multi-select prompts add a count head.
@@ -65,13 +69,25 @@ Pure self-play was never an option: both seats would run the same 60 cards, and 
 
 **Rollout size decided the model.** Raising the decisions per update from 131k to 524k lifted the whole learning curve, not just its end: at every matched budget it sat 3–6 pp above the 131k run. So I set the final run to 8.39M, sixteen times the 524k figure. It was slower per sample early on, 0.62 pool win rate against 0.72 after 40M cumulative decisions, but it kept gaining, and I submitted its best checkpoint, **0.83** after 403M decisions and 47 hours, while the 524k curve flattened near 0.72. The three runs are plotted below.
 
+![Rollout-size study: 131k, 524k and 8.39M decisions per update](writeup_fig2_rollout.png)
+
+*Rollout-size study: 131k, 524k and 8.39M decisions per update*
+
 **Why per-sample efficiency falls.** PPO improves the policy in discrete steps, each capped by clip 0.2, three epochs and a KL early-stop. How far the policy may move is set by that trust region, not by how much data went into the update, so what a run extracts from D decisions scales with D/N for a rollout of N. Early on advantages are large (mean |advantage| 0.35 at update 1) and even a 524k batch saturates the clip, so sixteen small steps compound where one large step does not: at 40M decisions the 524k recipe had taken **76** bounded steps, the 8.39M recipe **5**.
 
 **Why the ceiling rises.** Late in training the balance inverts. Mean |advantage| has fallen to 0.16, so the signal has shrunk while the variance from shuffles, coin flips and hidden information has not. The pool has 69 entries and the rarest take 0.4% of games each, about 30 per update at 524k. An advantage estimated from 30 sparse-reward games is mostly noise, so the step spends part of its trust region on it and the next update undoes that. Estimate error falls as 1/√N, and 8.39M gives them about 460 games each, enough for the step to be nearly all signal. The ceiling sits where per-update improvement equals noise-driven regression, so a bigger rollout raises it. Alakazam, the hardest archetype, went from 21% to 58%, as below.
 
+![The 8.39M PPO run](writeup_fig3_training.png)
+
+*The 8.39M PPO run*
+
 ## 5. Results on the ladder
 
 The ladder pairs by Elo 90% of the time and draws a random leaderboard opponent otherwise, and the API does not label which is which. The distribution of rating gaps decays out to about 200 points and then goes flat, so I count a gap above 200 as a random draw, which over my last 2,000 settled episodes takes the lowest-rated 10% of my opponents, 200 games. The remaining **1,800 Elo-matched games run 53.5% [51.2, 55.8]**. The strongest evidence that this is policy and not deck: on the identical 60 cards, **71.6% over 74 games [60.5, 80.6]**, against 54.2% over 144 games on other Hydrapple lists. Win rate by opponent build is below.
+
+![Ladder win rate by opponent build](writeup_fig4_matchups.png)
+
+*Ladder win rate by opponent build*
 
 ## 6. What I tried that did not work
 
