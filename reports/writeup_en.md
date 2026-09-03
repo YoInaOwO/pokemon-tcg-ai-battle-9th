@@ -2,9 +2,9 @@
 
 **Subtitle:** Rank 9 of 6,807 and a gold medal in the Simulation track, from a 7.8M-parameter policy that never searches at play time.
 
-**TL;DR.** Both final submissions are the same Ogerpon–Hydrapple deck and the same weights. Training ran on one node of 8 RTX 4090s and 150 CPU actors; the final PPO run took 56 hours. Every legal option is executed once inside the engine and its consequences appended as 28 features, so the network reads what a card does instead of memorising its id. Training is behavioural cloning on 136k replays, then PPO against a pool rebuilt from the live arena. Rollout size was the biggest lever; MCTS at play time made the agent worse.
+Thank you to Kaggle and all the organizers for a fiercely contested and enjoyable competition.
 
-Thank you to Kaggle and all the organizers for a fiercely contested competition.
+**TL;DR.** Both final submissions are the same Ogerpon–Hydrapple deck and the same weights. Training ran on one node of 8 RTX 4090s and 150 CPU actors; the final PPO run took 56 hours. Every legal option is executed once inside the engine and its consequences appended as 28 features, so the network reads what a card does instead of memorising its id. Training is behavioural cloning on 136k replays, then PPO against a pool rebuilt from the live arena. Rollout size was the biggest lever; MCTS at play time made the agent worse.
 
 ---
 
