@@ -10,7 +10,7 @@ Thank you to Kaggle and all the organizers for a fiercely contested competition.
 
 ## 1. Deck: Ogerpon–Hydrapple
 
-An **archetype** is a family of lists sharing a core, so anything built around Dragapult ex is `dragapult`; an **exact list** is one specific 60 cards. The 12 Aug arena held 14 archetypes but 148 exact lists, 15 of them `dragapult`.
+An **archetype** is a family of lists sharing a core, so anything built around Dragapult ex is `dragapult`; an **exact list** is one specific 60 cards. The 12 Aug arena held 14 archetypes but 148 exact lists.
 
 **Game plan.** Mono-Grass energy acceleration. *Teal Dance* and *Ripening Charge* attach a Basic {G} for free each turn, *Wild Growth* makes each one count double, and both attacks add 30 damage per Energy, reaching OHKO range on 330 HP by turn 3–4.
 
