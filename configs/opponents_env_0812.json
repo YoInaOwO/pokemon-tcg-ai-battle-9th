@@ -1,0 +1,290 @@
+[
+  {
+    "kind": "mirror",
+    "weight": 0.05
+  },
+  {
+    "kind": "random",
+    "weight": 0.1
+  },
+  {
+    "kind": "bc",
+    "name": "marnie_grimmsnarl__e521a283",
+    "ckpt": "runs/bc_marnie_grimmsnarl_v6/model.pt",
+    "deck": "data/decks/marnie_grimmsnarl_e521a283.csv",
+    "weight": 0.1774
+  },
+  {
+    "kind": "bc",
+    "name": "mega_lopunny__220eddd2",
+    "ckpt": "runs/bc_mega_lopunny_v6/model.pt",
+    "deck": "data/decks/mega_lopunny_220eddd2.csv",
+    "weight": 0.1142
+  },
+  {
+    "kind": "bc",
+    "name": "dragapult__f12c8bec",
+    "ckpt": "runs/bc_dragapult_v6/model.pt",
+    "deck": "data/decks/dragapult_f12c8bec.csv",
+    "weight": 0.0918
+  },
+  {
+    "kind": "bc",
+    "name": "alakazam__74d86ec3",
+    "ckpt": "runs/bc_alakazam_v6/model.pt",
+    "deck": "data/decks/alakazam_74d86ec3.csv",
+    "weight": 0.0904
+  },
+  {
+    "kind": "bc",
+    "name": "mega_lucario__de29c8c2",
+    "ckpt": "runs/bc_mega_lucario_v6/model.pt",
+    "deck": "data/decks/mega_lucario_de29c8c2.csv",
+    "weight": 0.0475
+  },
+  {
+    "kind": "bc",
+    "name": "marnie_grimmsnarl__61f7c5ae",
+    "ckpt": "runs/bc_marnie_grimmsnarl_v6/model.pt",
+    "deck": "data/decks/marnie_grimmsnarl_61f7c5ae.csv",
+    "weight": 0.028
+  },
+  {
+    "kind": "bc",
+    "name": "ogerpon_hydrapple__15038d94",
+    "ckpt": "runs/bc_ogerpon_hydrapple_v6/model.pt",
+    "deck": "data/decks/ogerpon_hydrapple_15038d94.csv",
+    "weight": 0.0198
+  },
+  {
+    "kind": "bc",
+    "name": "ogerpon__26ae00a1",
+    "ckpt": "runs/bc_ogerpon_v6/model.pt",
+    "deck": "data/decks/ogerpon_26ae00a1.csv",
+    "weight": 0.0192
+  },
+  {
+    "kind": "bc",
+    "name": "ogerpon_hydrapple__bcbecc09",
+    "ckpt": "runs/bc_ogerpon_hydrapple_v6/model.pt",
+    "deck": "data/decks/ogerpon_hydrapple_bcbecc09.csv",
+    "weight": 0.0151
+  },
+  {
+    "kind": "bc",
+    "name": "dragapult__c42e3a7a",
+    "ckpt": "runs/bc_dragapult_v6/model.pt",
+    "deck": "data/decks/dragapult_c42e3a7a.csv",
+    "weight": 0.0144
+  },
+  {
+    "kind": "bc",
+    "name": "kangaskhan_box__1ac7638f",
+    "ckpt": "runs/bc_kangaskhan_box_v6/model.pt",
+    "deck": "data/decks/kangaskhan_box_1ac7638f.csv",
+    "weight": 0.0143
+  },
+  {
+    "kind": "bc",
+    "name": "ogerpon_hydrapple__c3eb98eb",
+    "ckpt": "runs/bc_ogerpon_hydrapple_v6/model.pt",
+    "deck": "data/decks/ogerpon_hydrapple_c3eb98eb.csv",
+    "weight": 0.0134
+  },
+  {
+    "kind": "bc",
+    "name": "dragapult__94eb93ae",
+    "ckpt": "runs/bc_dragapult_v6/model.pt",
+    "deck": "data/decks/dragapult_94eb93ae.csv",
+    "weight": 0.0131
+  },
+  {
+    "kind": "bc",
+    "name": "grookey_dipplin__2d6355a0",
+    "ckpt": "runs/bc_grookey_dipplin_v6/model.pt",
+    "deck": "data/decks/grookey_dipplin_2d6355a0.csv",
+    "weight": 0.0128
+  },
+  {
+    "kind": "bc",
+    "name": "alakazam__de3eec8e",
+    "ckpt": "runs/bc_alakazam_v6/model.pt",
+    "deck": "data/decks/alakazam_de3eec8e.csv",
+    "weight": 0.011
+  },
+  {
+    "kind": "bc",
+    "name": "ogerpon__84aabd51",
+    "ckpt": "runs/bc_ogerpon_v6/model.pt",
+    "deck": "data/decks/ogerpon_84aabd51.csv",
+    "weight": 0.0105
+  },
+  {
+    "kind": "bc",
+    "name": "kangaskhan_crustle__9705c721",
+    "ckpt": "runs/bc_kangaskhan_crustle_v6/model.pt",
+    "deck": "data/decks/kangaskhan_crustle_9705c721.csv",
+    "weight": 0.0104
+  },
+  {
+    "kind": "bc",
+    "name": "mega_lopunny__da281b3a",
+    "ckpt": "runs/bc_mega_lopunny_v6/model.pt",
+    "deck": "data/decks/mega_lopunny_da281b3a.csv",
+    "weight": 0.0101
+  },
+  {
+    "kind": "bc",
+    "name": "cynthia__8cf194ed",
+    "ckpt": "runs/bc_cynthia_v6/model.pt",
+    "deck": "data/decks/cynthia_8cf194ed.csv",
+    "weight": 0.0093
+  },
+  {
+    "kind": "bc",
+    "name": "alakazam__45c6f670",
+    "ckpt": "runs/bc_alakazam_v6/model.pt",
+    "deck": "data/decks/alakazam_45c6f670.csv",
+    "weight": 0.0085
+  },
+  {
+    "kind": "bc",
+    "name": "ogerpon_hydrapple__6dc3b6ed",
+    "ckpt": "runs/bc_ogerpon_hydrapple_v6/model.pt",
+    "deck": "data/decks/ogerpon_hydrapple_6dc3b6ed.csv",
+    "weight": 0.0084
+  },
+  {
+    "kind": "bc",
+    "name": "kangaskhan_box__fa0854ff",
+    "ckpt": "runs/bc_kangaskhan_box_v6/model.pt",
+    "deck": "data/decks/kangaskhan_box_fa0854ff.csv",
+    "weight": 0.0076
+  },
+  {
+    "kind": "bc",
+    "name": "ogerpon_hydrapple__0b17fabc",
+    "ckpt": "runs/bc_ogerpon_hydrapple_v6/model.pt",
+    "deck": "data/decks/ogerpon_hydrapple_0b17fabc.csv",
+    "weight": 0.0072
+  },
+  {
+    "kind": "bc",
+    "name": "dragapult__ff47bf66",
+    "ckpt": "runs/bc_dragapult_v6/model.pt",
+    "deck": "data/decks/dragapult_ff47bf66.csv",
+    "weight": 0.0066
+  },
+  {
+    "kind": "bc",
+    "name": "kangaskhan_box__7978c6b6",
+    "ckpt": "runs/bc_kangaskhan_box_v6/model.pt",
+    "deck": "data/decks/kangaskhan_box_7978c6b6.csv",
+    "weight": 0.0066
+  },
+  {
+    "kind": "bc",
+    "name": "grookey_dipplin__82ada9f5",
+    "ckpt": "runs/bc_grookey_dipplin_v6/model.pt",
+    "deck": "data/decks/grookey_dipplin_82ada9f5.csv",
+    "weight": 0.0065
+  },
+  {
+    "kind": "bc",
+    "name": "dragapult__e2ebc043",
+    "ckpt": "runs/bc_dragapult_v6/model.pt",
+    "deck": "data/decks/dragapult_e2ebc043.csv",
+    "weight": 0.0065
+  },
+  {
+    "kind": "bc",
+    "name": "mega_lopunny__277571b5",
+    "ckpt": "runs/bc_mega_lopunny_v6/model.pt",
+    "deck": "data/decks/mega_lopunny_277571b5.csv",
+    "weight": 0.0064
+  },
+  {
+    "kind": "bc",
+    "name": "dragapult__dcb185cb",
+    "ckpt": "runs/bc_dragapult_v6/model.pt",
+    "deck": "data/decks/dragapult_dcb185cb.csv",
+    "weight": 0.0062
+  },
+  {
+    "kind": "bc",
+    "name": "mega_lucario__85d6506c",
+    "ckpt": "runs/bc_mega_lucario_v6/model.pt",
+    "deck": "data/decks/mega_lucario_85d6506c.csv",
+    "weight": 0.0062
+  },
+  {
+    "kind": "bc",
+    "name": "ns_zoroark__ff574441",
+    "ckpt": "runs/bc_ns_zoroark_v6/model.pt",
+    "deck": "data/decks/ns_zoroark_ff574441.csv",
+    "weight": 0.0057
+  },
+  {
+    "kind": "bc",
+    "name": "dragapult__db601375",
+    "ckpt": "runs/bc_dragapult_v6/model.pt",
+    "deck": "data/decks/dragapult_db601375.csv",
+    "weight": 0.0057
+  },
+  {
+    "kind": "bc",
+    "name": "kangaskhan_box__89c365a0",
+    "ckpt": "runs/bc_kangaskhan_box_v6/model.pt",
+    "deck": "data/decks/kangaskhan_box_89c365a0.csv",
+    "weight": 0.0056
+  },
+  {
+    "kind": "bc",
+    "name": "dragapult__bd15e67b",
+    "ckpt": "runs/bc_dragapult_v6/model.pt",
+    "deck": "data/decks/dragapult_bd15e67b.csv",
+    "weight": 0.0055
+  },
+  {
+    "kind": "bc",
+    "name": "kangaskhan_crustle__90324094",
+    "ckpt": "runs/bc_kangaskhan_crustle_v6/model.pt",
+    "deck": "data/decks/kangaskhan_crustle_90324094.csv",
+    "weight": 0.0053
+  },
+  {
+    "kind": "bc",
+    "name": "alakazam__15c92576",
+    "ckpt": "runs/bc_alakazam_v6/model.pt",
+    "deck": "data/decks/alakazam_15c92576.csv",
+    "weight": 0.0052
+  },
+  {
+    "kind": "bc",
+    "name": "grookey_dipplin__e817251f",
+    "ckpt": "runs/bc_grookey_dipplin_v6/model.pt",
+    "deck": "data/decks/grookey_dipplin_e817251f.csv",
+    "weight": 0.0051
+  },
+  {
+    "kind": "bc",
+    "name": "kangaskhan_crustle__35af25c9",
+    "ckpt": "runs/bc_kangaskhan_crustle_v6/model.pt",
+    "deck": "data/decks/kangaskhan_crustle_35af25c9.csv",
+    "weight": 0.005
+  },
+  {
+    "kind": "bc",
+    "name": "ogerpon__e130fa70",
+    "ckpt": "runs/bc_ogerpon_v6/model.pt",
+    "deck": "data/decks/ogerpon_e130fa70.csv",
+    "weight": 0.0039
+  },
+  {
+    "kind": "bc",
+    "name": "kangaskhan_crustle__40f3dc82",
+    "ckpt": "runs/bc_kangaskhan_crustle_v6/model.pt",
+    "deck": "data/decks/kangaskhan_crustle_40f3dc82.csv",
+    "weight": 0.0037
+  }
+]

@@ -1,0 +1,13 @@
+[
+  {"kind": "mirror", "weight": 0.35},
+  {"kind": "league", "weight": 0.25},
+  {"kind": "bc", "name": "anchor_lopunny", "ckpt": "runs/bc_v1/model.pt",
+   "deck": "data/decks/mega_lopunny_220eddd2.csv", "weight": 0.12},
+  {"kind": "bc", "name": "grimmsnarl", "ckpt": "runs/bc_grimm/model.pt",
+   "deck": "data/decks/marnie_grimmsnarl_e521a283.csv", "weight": 0.10},
+  {"kind": "bc", "name": "alakazam", "ckpt": "runs/bc_alakazam/model.pt",
+   "deck": "data/decks/alakazam_74d86ec3.csv", "weight": 0.07},
+  {"kind": "bc", "name": "lucario", "ckpt": "runs/bc_lucario/model.pt",
+   "deck": "data/decks/mega_lucario_de29c8c2.csv", "weight": 0.06},
+  {"kind": "random", "weight": 0.05}
+]

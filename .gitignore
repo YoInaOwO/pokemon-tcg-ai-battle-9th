@@ -1,0 +1,25 @@
+# Never commit anything covered by the competition's engine licence
+# (LicenseRef-PTCG-ABC-Competition-Use-Only): the engine sources, its compiled
+# libraries, the organisers' sample agents and notebooks, the card database,
+# and anything derived from the replay dumps.
+ptcg_engine/
+sample_submission/
+cg/
+**/rule_agents/
+*.ipynb
+*.dll
+*.so
+*.dylib
+*Card Data.csv
+data/
+replays_zip/
+runs/
+logs/
+*.tar.gz
+*.npz
+*.pt
+
+__pycache__/
+*.py[cod]
+.venv/
+.DS_Store
