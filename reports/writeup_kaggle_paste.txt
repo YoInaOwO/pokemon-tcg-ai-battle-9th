@@ -30,7 +30,7 @@ Bug Catching Set finds Energy and Grass Pokémon; Dawn finds the three evolution
 
 *Figure 1. State encoding, option scoring and separate training heads. The opponent-hand input enters only the oracle critic.*
 
-The observation becomes 64 tokens covering global state, selection context, board slots, hand, revealed cards, discard piles, public history, memory and my unseen cards (deck and unrevealed Prizes). A five-layer Transformer with width 384 and six attention heads encodes them. Cards combine learned ID embeddings with projected static attributes and structured Ability/attack descriptions. ID dropout encourages the model to use those descriptions when card identities are unfamiliar.
+The observation becomes 64 tokens covering global state, selection context, board slots, hand, revealed cards, discard piles, public history, memory and my unseen cards (deck and unrevealed Prizes). A five-layer Transformer with width 384 and six attention heads encodes them. Card representations combine learned ID embeddings with projected static attributes and structured Ability/attack descriptions. ID dropout encourages the model to use those descriptions when card identities are unfamiliar.
 
 Type and position embeddings distinguish zones and slots; padding masks exclude empty hand and revealed-card slots from attention.
 
@@ -44,7 +44,7 @@ Two critics estimate returns during training; the oracle critic additionally rec
 
 ## 3. Feature engineering
 
-I encode resources, public history and action consequences explicitly. The table separates numerical columns from IDs.
+I encode resources, public history and action consequences explicitly.
 
 | Block | Width | Information and purpose |
 |---|---|---|
@@ -56,7 +56,7 @@ I encode resources, public history and action consequences explicitly. The table
 | Base option | 60 + IDs | Action type, location, card, target, attack, counts and target attributes identify what each candidate does. |
 | Engine lookahead | 28 | Damage, knockouts, Prize/resource changes and newly legal attacks expose immediate consequences. |
 
-Opponent belief estimates deck archetypes from publicly revealed opponent cards. I match these against replay decklists, weight matches by frequency and card overlap, then normalize their weights by archetype. This distribution enters the global state. Cloning dropout sometimes replaces it with “unknown” to reduce reliance on deck identification.
+Opponent belief estimates deck archetypes from publicly revealed opponent cards. I match these against exact replay decklists, weight matches by frequency and card overlap, then sum weights by archetype and normalize. This distribution enters the global state. Cloning dropout sometimes replaces it with “unknown” to reduce reliance on deck identification.
 
 For eligible main-phase, single-selection decisions, the probe evaluates up to 64 candidates, following forced continuations and coin-flip branches within a bounded expansion.
 
@@ -72,7 +72,7 @@ The probe fills hidden zones with a fixed completion rather than the opponent's 
 
 I built the replay corpus from 136k episodes collected between 14 July and 12 August. I first trained a shared model across deck families, then fine-tuned it for each archetype. Sharing skills such as attaching and evolving helps decks with fewer demonstrations.
 
-Cloning weights winning decisions at 1.0 and losing decisions at 0.3, with a ten-day recency decay and additional weighting for stronger players.
+I weight decisions from winners at 1.0 and losers at 0.3, with ten-day recency decay and extra weight for stronger players.
 
 ### Stage 2: value fine-tune
 
@@ -84,26 +84,26 @@ I was training one deck, so pure self-play would focus on mirror matches and mis
 
 | Opponent component | Purpose |
 |---|---|
-| Top 40 observed lists, weighted by arena frequency and piloted by cloned archetype models | Match the arena's deck distribution |
-| Mutated lists | Practise against altered card combinations with the corresponding cloned pilot |
+| Top 40 exact 60-card lists | Sample in proportion to each list's arena frequency |
+| Mutated lists | Sample variants uniformly to practise against altered card combinations |
 | Four organizer-provided starter scripts | Cover simple but different play styles for the ladder's 10% random-opponent component |
 | Self-mirrors | Practise the mirror matchup from both sides |
 
-The pool builder assigns these components 75%, 10%, 10% and 5% of games. Mirror games supply both players' trajectories, so they account for a larger share of training samples than games.
+The pool builder assigns these components 75%, 10%, 10% and 5% of games. Each observed or mutated list uses its archetype's BC model, shared across that archetype's lists. Mirror games supply both players' trajectories, so they account for a larger share of training samples than of games.
 
 For mutations, I start from each archetype's most common list and perform 5–10 replacement steps. Replacements come from cards observed within that archetype, capped at the largest count seen in any one list. The engine validates each resulting 60-card deck before inclusion.
 
-PPO uses clipped policy updates, value regression and an entropy bonus. Clipping discourages abrupt policy changes, value regression improves return estimates, and the entropy bonus encourages exploration of alternative actions. The oracle critic supplies generalized advantage estimates. I used γ = 0.997, λ = 0.95, clipping 0.2 and learning rate 1e-4. Prize shaping and a penalty for drifting from the cloning policy anneal to zero over eight updates, leaving the final objective focused on winning.
+Clipping discourages abrupt policy changes, value regression improves return estimates, and the entropy bonus encourages exploration of alternative actions. The oracle critic supplies generalized advantage estimates. I used γ = 0.997, λ = 0.95, clipping 0.2 and learning rate 1e-4. Prize shaping and a penalty for drifting from the cloning policy anneal to zero over eight updates, leaving the final objective focused on winning.
 
-**Why such a large rollout?** I first increased the decisions collected per update from 131k to 524k and saw the training win-rate plateau rise. That result prompted a direct jump to 8.39 million, sixteen times the previous rollout. The larger run improved more slowly at first but continued reaching higher scores.
+**Why such a large rollout?** I first increased the decisions collected per update from 131k to 524k and saw the training win-rate plateau rise. That result prompted a direct jump to 8.39 million, sixteen times the previous rollout. Training win rate rose slowly at first, then reached a higher plateau.
 
-With a small rollout, rare matchups contribute few games, so a lucky opening can have an outsized effect on an update. A larger rollout includes more games and both turn orders before each update. Mean absolute advantage fell from 0.35 initially to 0.16 near the best training score. My interpretation is that broader sampling helps distinguish these smaller signals from game-to-game variation. The cost is fewer policy updates for the same number of decisions, which helps explain the slower initial progress.
+With a small rollout, rare matchups contribute few games, so a lucky opening can have an outsized effect on an update. A larger rollout includes more games and both turn orders before each update. Mean absolute advantage fell from 0.35 initially to 0.16 near the peak training win rate. My interpretation is that broader sampling helps distinguish these smaller signals from game-to-game variation. The cost is fewer policy updates for the same number of decisions, which helps explain the slower initial progress.
 
 ![Training progress and turn order](report_training_evidence.png)
 
-*Figure 2. Left: arena-weighted training scores using rolling windows of up to 300 games per fixed cloned opponent; scripts, mutants and mirrors are excluded. Right: first/second-player scores during rollout 48; n combines both orders. Draws count half.*
+*Figure 2. Left: arena-weighted training win rates using rolling windows of up to 300 games per fixed cloned opponent; scripts, mutants and mirrors are excluded. Right: first/second-player win rates during rollout 48; n combines both orders. Draws count half.*
 
-With eight RTX 4090 GPUs, the run completed 57 updates in 56.3 hours. Its training score rose from 52.4% to 83.3% at update 48, after 403 million decisions; updates 45–57 stayed between 80.5% and 83.3%. Turn order remained important against Alakazam: 63.5% going first versus 50.6% second, compared with 83.9% versus 83.7% against Dragapult.
+With eight RTX 4090 GPUs, the run completed 57 updates in 56.3 hours. Its training win rate rose from 52.4% to 83.3% at update 48, after 403 million decisions; updates 45–57 stayed between 80.5% and 83.3%. Turn order remained important against Alakazam: 63.5% going first versus 50.6% second, compared with 83.9% versus 83.7% against Dragapult.
 
 ## 5. Results in real Kaggle battles
 
