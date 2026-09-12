@@ -153,27 +153,32 @@ def create_figure():
         route([(start, state_y), (end, state_y)], TEAL)
 
     # Candidate-action lane and its queries / keys / values.
+    attention_left, attention_right = attention_x - 111, attention_x + 111
+    embedding_width = 263
+    embedding_left = (280 + attention_left - embedding_width) / 2
+    embedding_right = embedding_left + embedding_width
+    option_bus, options_width = 1270, 150
+    options_left = (attention_right + option_bus - options_width) / 2
+    options_right = options_left + options_width
     label(20, 451, "Option processing (candidate actions)", 27, BLUE, "bold")
     panel(20, 477, 260, 159, BLUE, "Candidate Options", [
         "Action, card, target & attack", "Numeric features + lookahead\nprobes"],
         body_size=16.5, gap=29)
-    panel(306, 477, 263, 159, BLUE, "Option Embedding", [
+    panel(embedding_left, 477, embedding_width, 159, BLUE, "Option Embedding", [
         "Shared card / attack\nrepresentations", "Concatenate + linear\nprojection"],
         body_size=18, gap=23)
-    attention_left, attention_right = attention_x - 111, attention_x + 111
-    options_left, options_right = attention_right + 26, attention_right + 176
     compact(attention_left, option_y - 101 / 2, 222, 101, BLUE, "Cross-Attention", "Residual + LayerNorm", size=22)
-    compact(options_left, option_y - 91 / 2, 150, 91, BLUE, "Contextual\noptions oᵢ", "(N × 384)", size=19, body_size=17)
-    route([(280, option_y), (306, option_y)], BLUE)
-    route([(569, option_y), (attention_left, option_y)], BLUE)
-    label((569 + attention_left) / 2, option_y - 20, "Queries", 18, BLUE, "bold", "center")
+    compact(options_left, option_y - 91 / 2, options_width, 91, BLUE, "Contextual\noptions oᵢ", "(N × 384)", size=19, body_size=17)
+    route([(280, option_y), (embedding_left, option_y)], BLUE)
+    route([(embedding_right, option_y), (attention_left, option_y)], BLUE)
+    label((embedding_right + attention_left) / 2, option_y - 20, "Queries", 18, BLUE, "bold", "center")
     route([(attention_x, state_y + 48), (attention_x, option_y - 101 / 2)], BLUE)
     label(attention_x + 16, 420, "Keys / Values", 19, BLUE, "bold")
     route([(attention_right, option_y), (options_left, option_y)], BLUE)
 
     # Inference heads: state and option buses retain distinct colors.
     heads_left, heads_right = 1380, 1608
-    option_bus, state_bus, selection_bus = 1270, 1330, 1634
+    state_bus, selection_bus = 1330, 1634
     label(heads_left - 18, 356, "Action heads (inference)", 26, PURPLE, "bold")
     panel(heads_left, 389, 228, 121, PURPLE, "Policy Head", [
         "[oᵢ, h, oᵢ ⊙ h] → MLP", "Masked option scores"],
