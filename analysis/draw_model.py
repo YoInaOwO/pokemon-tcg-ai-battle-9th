@@ -126,10 +126,10 @@ def create_figure():
 
     # Heading and configuration badge.
     label(WIDTH / 2, 43, "Pokémon TCG Policy Network", 49, INK, "bold", "center")
-    ax.add_patch(FancyBboxPatch((WIDTH / 2 - 305, 112), 610, 44,
+    ax.add_patch(FancyBboxPatch((WIDTH / 2 - 410, 112), 820, 44,
                                boxstyle="round,pad=0,rounding_size=21",
                                ec="none", fc="#EDF1F6"))
-    label(WIDTH / 2, 134, "64 state tokens   |   d = 384   |   5 layers   |   6 heads",
+    label(WIDTH / 2, 134, "64 state tokens   |   d = 384   |   5 layers   |   6 attention heads per layer",
           21, "#3D609E", "bold", "center")
 
     # State lane.
