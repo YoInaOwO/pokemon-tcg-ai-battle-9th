@@ -7,9 +7,12 @@ The write-up is in [`reports/writeup_en.md`](reports/writeup_en.md)
 (Chinese: [`reports/writeup_zh.md`](reports/writeup_zh.md);
 Kaggle paste version: [`reports/writeup_kaggle_paste.txt`](reports/writeup_kaggle_paste.txt)).
 
-**Please read [`NOTICE.md`](NOTICE.md) first.** The competition engine, the card
-database and the replay data are not in this repository and may not be
-redistributed, so nothing here runs standalone.
+Final model weights: [`hydra15038_model_weights.zip`](models/hydra15038_model_weights.zip).
+The archive contains `net.npz` extracted unchanged from the final submission,
+plus a short README. Inference requires the original competition dependencies.
+
+**Please read [`NOTICE.md`](NOTICE.md) first.** The competition engine, card
+database and raw replay data are not included in this repository.
 
 ## The idea
 
@@ -46,12 +49,13 @@ and model weights.
 | `tools/run_ppo_hydra_15038_*.sh` | saved PPO training configurations |
 | `analysis/` | post-competition ladder analysis and the write-up figures |
 | `analysis/draw_model.py` | generates the current model diagram as PNG, SVG and PDF |
+| `models/hydra15038_model_weights.zip` | final trained weights and configuration, without the competition runtime or datasets |
 
 ## Training and results
 
 Increasing decisions per update from 131k to 524k raised the training win-rate
-plateau, prompting a direct jump to 8.39M. The final run used eight RTX 4090
-GPUs and completed 57 updates in 56.3 hours. Its training score peaked at
+plateau, prompting a direct jump to 8.39M. The final PPO run completed
+57 updates in 56.3 hours. Its training score peaked at
 83.3%; the report explains the opponent pool, metric and rollout tradeoffs.
 
 Across 2,000 real Kaggle games, the final submissions scored 57.3%, counting

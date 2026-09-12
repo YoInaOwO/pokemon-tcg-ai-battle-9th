@@ -93,7 +93,7 @@ The pool builder assigns these components 75%, 10%, 10% and 5% of games. Each ob
 
 For mutations, I start from each archetype's most common list and perform 5–10 replacement steps. Replacements come from cards observed within that archetype, capped at the largest count seen in any one list. The engine validates each resulting 60-card deck before inclusion.
 
-Clipping discourages abrupt policy changes, value regression improves return estimates, and the entropy bonus encourages exploration of alternative actions. The oracle critic supplies generalized advantage estimates. I used γ = 0.997, λ = 0.95, clipping 0.2 and learning rate 1e-4. Prize shaping and a penalty for drifting from the cloning policy anneal to zero over eight updates, leaving the final objective focused on winning.
+Terminal rewards are +1 for wins, −1 for losses and 0 for draws. Clipping discourages abrupt policy changes, value regression improves return estimates, and the entropy bonus encourages exploration of alternative actions. The oracle critic supplies generalized advantage estimates. I used γ = 0.997, λ = 0.95, clipping 0.2 and learning rate 1e-4. Prize shaping and a penalty for drifting from the cloning policy anneal to zero over eight updates.
 
 **Why such a large rollout?** I first increased the decisions collected per update from 131k to 524k and saw the training win-rate plateau rise. That result prompted a direct jump to 8.39 million, sixteen times the previous rollout. Training win rate rose slowly at first, then reached a higher plateau.
 
@@ -103,7 +103,7 @@ With a small rollout, rare matchups contribute few games, so a lucky opening can
 
 *Figure 2. Left: arena-weighted training win rates using rolling windows of up to 300 games per fixed cloned opponent; scripts, mutants and mirrors are excluded. Right: first/second-player win rates during rollout 48; n combines both orders. Draws count half.*
 
-With eight RTX 4090 GPUs, the run completed 57 updates in 56.3 hours. Its training win rate rose from 52.4% to 83.3% at update 48, after 403 million decisions; updates 45–57 stayed between 80.5% and 83.3%. Turn order remained important against Alakazam: 63.5% going first versus 50.6% second, compared with 83.9% versus 83.7% against Dragapult.
+The final PPO run completed 57 updates in 56.3 hours. Its training win rate rose from 52.4% to 83.3% at update 48, after 403 million decisions; updates 45–57 stayed between 80.5% and 83.3%. Turn order remained important against Alakazam: 63.5% going first versus 50.6% second, compared with 83.9% versus 83.7% against Dragapult.
 
 ## 5. Results in real Kaggle battles
 
