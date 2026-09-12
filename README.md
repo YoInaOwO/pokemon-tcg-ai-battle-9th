@@ -45,6 +45,7 @@ and model weights.
 | `tools/train_v6_pipeline.sh` | the full BC pipeline |
 | `tools/run_ppo_hydra_15038_*.sh` | saved PPO training configurations |
 | `analysis/` | post-competition ladder analysis and the write-up figures |
+| `analysis/draw_model.py` | generates the current model diagram as PNG, SVG and PDF |
 
 ## Training and results
 
