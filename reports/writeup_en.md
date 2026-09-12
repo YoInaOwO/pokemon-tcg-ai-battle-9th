@@ -103,7 +103,7 @@ With a small rollout, rare matchups contribute few games, so a lucky opening can
 
 *Figure 2. Left: arena-weighted training win rates using rolling windows of up to 300 games per fixed cloned opponent; scripts, mutants and mirrors are excluded. Right: first/second-player win rates during rollout 48; n combines both orders. Draws count half.*
 
-The final PPO run completed 57 updates in 56.3 hours. Its training win rate rose from 52.4% to 83.3% at update 48, after 403 million decisions; updates 45–57 stayed between 80.5% and 83.3%. Turn order remained important against Alakazam: 63.5% going first versus 50.6% second, compared with 83.9% versus 83.7% against Dragapult.
+Using 8×RTX 4090, the final PPO run completed 57 updates in 56.3 hours. Its training win rate rose from 52.4% to 83.3% at update 48, after 403 million decisions; updates 45–57 stayed between 80.5% and 83.3%. Turn order remained important against Alakazam: 63.5% going first versus 50.6% second, compared with 83.9% versus 83.7% against Dragapult.
 
 ## 5. Results in real Kaggle battles
 
@@ -127,6 +127,6 @@ I scored 55.4% against Dragapult's Jamming Tower build and 42.9% against Risky R
 
 ## 7. What I would improve
 
-I would use a shared GPU service to batch decisions from multiple games. Faster inference would let me collect more training experience within the same budget.
+I would use a shared inference service to batch decisions from multiple games. Faster inference would let me collect more training experience within the same budget.
 
 I would set aside time for a second deck earlier and give the first deck a firm training budget. That would leave time to train and evaluate an alternative before submission.

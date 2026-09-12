@@ -54,8 +54,8 @@ and model weights.
 ## Training and results
 
 Increasing decisions per update from 131k to 524k raised the training win-rate
-plateau, prompting a direct jump to 8.39M. The final PPO run completed
-57 updates in 56.3 hours. Its training score peaked at
+plateau, prompting a direct jump to 8.39M. Using 8×RTX 4090, the final PPO run
+completed 57 updates in 56.3 hours. Its training score peaked at
 83.3%; the report explains the opponent pool, metric and rollout tradeoffs.
 
 Across 2,000 real Kaggle games, the final submissions scored 57.3%, counting
