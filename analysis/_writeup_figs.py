@@ -93,7 +93,7 @@ ax.spines["left"].set_visible(False)
 ax.set_title("Elo-matched win rate by opponent build (1,800 games, Wilson 95% CI)",
              loc="left", fontsize=11, color=INK)
 fig.tight_layout()
-fig.subplots_adjust(left=.36)
-fig.savefig(os.path.join(OUT, "writeup_fig4_matchups.png"), dpi=170)
+fig.savefig(os.path.join(OUT, "writeup_fig4_matchups.png"), dpi=170,
+            bbox_inches="tight", pad_inches=.15)
 plt.close(fig)
 print("wrote reports/writeup_fig3_training.png (copy), writeup_fig4_matchups.png")
