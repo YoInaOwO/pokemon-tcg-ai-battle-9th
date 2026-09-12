@@ -1,20 +1,15 @@
-"""Data figures for the Strategy-track writeup.
+"""Draw the matchup chart used by the current Strategy-track report.
 
-fig3  copy of the PPO training dashboard (reports/run_hydra_15038_r8m.png)
-fig4  Elo-matched win rate by opponent build, Wilson 95% CIs. The two large
-      archetypes appear as their named variants ("Dragapult" alone spans 55.4%
-      to 42.7%), the three lists classify_deck could not place are named after
-      what they run, and the games whose decklist could not be recovered at all
-      are dropped -- they are not a matchup
+Reads build/postgap_mu.json, a local aggregate not distributed in this repo.
+Writes reports/writeup_fig4_matchups.png (Figure 3 in the current report).
+Named builds are shown separately, with Wilson 95% intervals. Groups with
+fewer than 15 games and games without recovered decklists are omitted from
+the chart; these omissions do not change the report's aggregate statistics.
 
-Figures 1 (architecture) and 2 (rollout size) come from build/_arch_fig.py and
-build/_rollout_fig.py.
-
-    python build/_writeup_figs.py
+    python analysis/_writeup_figs.py
 """
 import json
 import os
-import shutil
 
 import matplotlib
 matplotlib.use("Agg")
@@ -29,9 +24,6 @@ plt.rcParams.update({
     "axes.spines.top": False, "axes.spines.right": False,
     "figure.facecolor": "white", "axes.facecolor": "white",
 })
-
-shutil.copy(os.path.join(OUT, "run_hydra_15038_r8m.png"),
-            os.path.join(OUT, "writeup_fig3_training.png"))
 
 mu = json.load(open(os.path.join(ROOT, "build", "postgap_mu.json"), encoding="utf-8"))
 EN = {
@@ -96,4 +88,4 @@ fig.tight_layout()
 fig.savefig(os.path.join(OUT, "writeup_fig4_matchups.png"), dpi=170,
             bbox_inches="tight", pad_inches=.15)
 plt.close(fig)
-print("wrote reports/writeup_fig3_training.png (copy), writeup_fig4_matchups.png")
+print("wrote reports/writeup_fig4_matchups.png")
