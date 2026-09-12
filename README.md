@@ -1,10 +1,11 @@
-# Lookahead as Input, Not Search
+# Turning Lookahead into Features for PPO
 
-Rank 9 of 6,807 in the [Pokémon Trading Card Game AI Battle Challenge](https://www.kaggle.com/competitions/pokemon-tcg-ai-battle)
-(Simulation track), from a 7.8M-parameter policy that never searches at play time.
+Ninth place in the [Pokémon Trading Card Game AI Battle Challenge](https://www.kaggle.com/competitions/pokemon-tcg-ai-battle)
+(Simulation track) with a 7.8M-parameter policy, without MCTS at play time.
 
 The write-up is in [`reports/writeup_en.md`](reports/writeup_en.md)
-(Chinese: [`reports/writeup_zh.md`](reports/writeup_zh.md)).
+(Chinese: [`reports/writeup_zh.md`](reports/writeup_zh.md);
+Kaggle paste version: [`reports/writeup_kaggle_paste.txt`](reports/writeup_kaggle_paste.txt)).
 
 **Please read [`NOTICE.md`](NOTICE.md) first.** The competition engine, the card
 database and the replay data are not in this repository and may not be
@@ -12,12 +13,19 @@ redistributed, so nothing here runs standalone.
 
 ## The idea
 
-Every legal option is executed once inside the engine's search sandbox and its
-public consequences are appended to that option's feature vector as 28 numbers:
-damage, KO, prizes won and lost, hand and deck deltas, turn handover, win or
-loss, a macro expansion over forced chains and coin flips, and a legality delta
-counting how many attacks become legal afterwards. The network therefore reads
-what a card *does* instead of memorising what its id means.
+For eligible main-phase, single-selection decisions, the engine probes up to
+64 candidate actions and encodes their immediate consequences as 28 features.
+These include damage, knockouts, Prize and resource changes, and newly legal
+attacks. The probe follows forced continuations and coin-flip branches within
+a bounded expansion; it does not read the opponent's actual hidden hand.
+
+Each candidate uses cross-attention to read the encoded game state, and a
+shared network scores it using both state and action features. Training proceeds
+through behavioural cloning, value fine-tune and PPO against an arena-based
+opponent pool. Both final submissions used the same Ogerpon–Hydrapple decklist
+and model weights.
+
+![Policy network](reports/model_redrawn.png)
 
 ## Layout
 
@@ -35,17 +43,20 @@ what a card *does* instead of memorising what its id means.
 | `tools/make_env_pool.py` | rebuilds the arena as an opponent pool from a replay dump |
 | `tools/mutate_decks.py` | in-archetype decklist mutations, engine-validated |
 | `tools/train_v6_pipeline.sh` | the full BC pipeline |
-| `tools/run_ppo_hydra_15038_*.sh` | the two PPO runs the write-up compares |
+| `tools/run_ppo_hydra_15038_*.sh` | saved PPO training configurations |
 | `analysis/` | post-competition ladder analysis and the write-up figures |
 
-## What decided the result
+## Training and results
 
-Rollout size. Raising the decisions per update from 131k to 524k lifted the
-whole learning curve, so the final run used 8.39M. It was slower per sample
-early on and finished much higher. Section 4 of the write-up works through why
-per-sample efficiency falls while the ceiling rises.
+Increasing decisions per update from 131k to 524k raised the training win-rate
+plateau, prompting a direct jump to 8.39M. The final run used eight RTX 4090
+GPUs and completed 57 updates in 56.3 hours. Its training score peaked at
+83.3%; the report explains the opponent pool, metric and rollout tradeoffs.
 
-Search at play time made the agent worse, twice over: the time budget only
-allows a few dozen simulations per tree, and determinised search plans a
-different line for each sampled opponent hand while the agent has to commit to
-one move for all of them.
+Across 2,000 real Kaggle games, the final submissions scored 57.3%, counting
+draws as half a win. The 1,800 games with a pre-game rating gap of at most 200
+scored 53.5%. See the report for matchup results and how this sample differs
+from the cloned training opponents.
+
+Determinized MCTS and a larger network did not provide useful improvements.
+The submitted policy retained the bounded engine probes as input features.
