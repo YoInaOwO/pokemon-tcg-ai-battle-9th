@@ -4,7 +4,7 @@
 
 Thank you to the organizers and Kaggle for hosting, and to all participants for the matches.
 
-**TL;DR.** Both final submissions used the same decklist and model weights. Bounded engine lookahead supplies action consequences to a 7.8M-parameter policy that learns action sequencing and resource allocation. I trained it through behavioural cloning, value fine-tune and PPO against a pool based on the arena. The agent finished ninth.
+**TL;DR.** Both final submissions used the same decklist and model weights. Bounded engine lookahead supplies action consequences to a 7.8M-parameter policy that learns action sequencing and resource allocation. I trained it through behavioural cloning, value fine-tune and PPO against a pool based on the arena.
 
 ## 1. Deck: Ogerpon–Hydrapple
 
@@ -60,15 +60,15 @@ For eligible main-phase, single-selection decisions, the probe evaluates up to 6
 
 For example, attaching Energy may make Hydrapple's attack legal. The probe exposes that change; the policy still decides whether to attack now or use another Ability first to reach a knockout threshold.
 
-The probe fills hidden zones with a fixed completion rather than the opponent's actual hand. Some option-count features are suppressed after draws or searches so they do not depend on the reconstructed deck order. The resulting features describe short-term consequences; they do not predict the opponent's full response.
+The engine needs a complete state. The probe reconstructs my unseen cards from my decklist with a fixed shuffle and fills the opponent's hidden zones with placeholder Energy and Basic Pokémon. These are placeholders, not predictions. It extracts immediate effects such as damage and Prize changes, without planning the opponent's response. Effects that depend on hidden card identities can still be inaccurate. Option counts are suppressed after draws or searches to avoid dependence on the reconstructed deck order.
 
 ## 4. Training
 
 ### Stage 1: behavioural cloning
 
-I built the replay corpus from 136k episodes collected between 14 July and 12 August. The shared model learned to imitate recorded decisions from both players across all deck archetypes. I then initialized each archetype model from that checkpoint and fine-tuned the full network at a lower learning rate, using only decisions made while playing that archetype. Different exact decklists within an archetype contributed to the same model.
+I trained BC on replays from 3–12 August. The shared model learned to imitate recorded decisions from both players across all deck archetypes. I then initialized each archetype model from that checkpoint and fine-tuned the full network at a lower learning rate, using only decisions made while playing that archetype. Different exact decklists within an archetype contributed to the same model.
 
-I weighted decisions from winners at 1.0 and losers at 0.3, with ten-day recency decay and extra weight for stronger players.
+I weighted decisions from winners at 1.0 and losers at 0.3, giving more weight to recent games and stronger players.
 
 ### Stage 2: value fine-tune
 
@@ -91,9 +91,9 @@ For mutations, I start from each archetype's most common list and perform 5–10
 
 Terminal rewards are +1 for wins, −1 for losses and 0 for draws. Clipping discourages abrupt policy changes, value regression improves return estimates, and the entropy bonus encourages exploration of alternative actions. The oracle critic supplies generalized advantage estimates. I used γ = 0.997, λ = 0.95, clipping 0.2 and learning rate 1e-4. Prize shaping and a penalty for drifting from the cloning policy anneal to zero over eight updates.
 
-**Why such a large rollout?** I first increased the decisions collected per update from 131k to 524k and saw the training win-rate plateau rise. That result prompted a direct jump to 8.39 million, sixteen times the previous rollout. Training win rate rose slowly at first, then reached a higher plateau.
+**Why such a large rollout?** I first increased the decisions collected per update from 131k to 524k and saw the training win-rate plateau rise. That result prompted a direct jump to 8.39 million, sixteen times the previous rollout.
 
-With a small rollout, rare matchups contribute few games, so a lucky opening can have an outsized effect on an update. A larger rollout includes more games and both turn orders before each update. Mean absolute advantage fell from 0.35 initially to 0.16 near the peak training win rate. I think collecting more games helps separate small advantage estimates from game-to-game noise. The cost is fewer policy updates for the same number of decisions, which helps explain the slower initial progress.
+With a small rollout, rare matchups contribute few games, so a lucky opening can have an outsized effect on an update. A larger rollout includes more games and both turn orders before each update. Mean absolute advantage fell from 0.35 initially to 0.16 near the peak training win rate. I think collecting more games helps separate small advantage estimates from game-to-game noise. The cost is fewer policy updates for the same number of decisions.
 
 ![Training progress and turn order](report_training_evidence.png)
 
@@ -115,7 +115,7 @@ Restricting the absolute pre-game rating gap to 200 leaves 1,800 games at **53.5
 
 *Figure 4. “Elo-matched” means rating gap ≤200. Groups with ≥15 games are shown; omitted games remain in the aggregate. “Mirror” includes all Hydrapple lists. Dots show win rates; grey bars show approximate Wilson 95% intervals. Repeated opponents can make the intervals optimistic.*
 
-Among games with a rating gap ≤200, I won **53 of 74 games against the identical decklist: 71.6% [60.5–80.6%]**. Matching decklists help assess policy quality, though opponent strength still varies.
+Among games with a rating gap ≤200, I won **53 of 74 games against the identical decklist: 71.6% [60.5–80.6%]**. With identical cards available to both sides, this result supports the policy's ability to use the deck effectively.
 
 Although the win rates showed a gap between my BC models and Kaggle opponents, as imitation learning struggles to surpass those it imitates, these models still provided useful opponents for PPO training and a consistent benchmark for tracking the policy's progress.
 
