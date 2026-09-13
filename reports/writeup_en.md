@@ -82,14 +82,14 @@ Before PPO, I generated games with the starting policy and fitted both critics t
 
 I was training one deck, so pure self-play would focus on mirror matches and miss other decks' threats and Prize trades. I built an opponent pool from the 12 August arena's 148 distinct lists, keeping mirrors as one component.
 
-| Opponent component | Purpose |
-|---|---|
-| Top 40 exact 60-card lists | Sample in proportion to each list's arena frequency |
-| Mutated lists | Sample variants uniformly to practise against altered card combinations |
-| Four organizer-provided starter scripts | Cover simple but different play styles for the ladder's 10% random-opponent component |
-| Self-mirrors | Practise the mirror matchup from both sides |
+| Opponent component | Share of games | Purpose |
+|---|---|---|
+| Top 40 exact 60-card lists | 75% | Sample in proportion to each list's arena frequency |
+| Mutated lists | 10% | Sample variants uniformly to practise against altered card combinations |
+| Four organizer-provided starter scripts | 10% | Cover simple but different play styles for the ladder's 10% random-opponent component |
+| Self-mirrors | 5% | Practise the mirror matchup from both sides |
 
-The pool builder assigns these components 75%, 10%, 10% and 5% of games. Each observed or mutated list uses its archetype's BC model, shared across that archetype's lists. Mirror games supply both players' trajectories, so they account for a larger share of training samples than of games.
+Each observed or mutated list uses its archetype's BC model, shared across that archetype's lists. Mirror games supply both players' trajectories, so they account for a larger share of training samples than of games.
 
 For mutations, I start from each archetype's most common list and perform 5–10 replacement steps. Replacements come from cards observed within that archetype, capped at the largest count seen in any one list. The engine validates each resulting 60-card deck before inclusion.
 
