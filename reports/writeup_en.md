@@ -64,13 +64,13 @@ HP is scaled by 400. Selection counts use logarithms so that large forced select
 
 For example, attaching Energy may make Hydrapple's attack legal. The probe exposes that change; the policy still decides whether to attack now or use another Ability first to reach a knockout threshold. The engine supplies local consequences while the network learns sequencing and resource tradeoffs.
 
-The probe fills hidden zones with a fixed completion rather than the opponent's actual hand. Some option-count features are suppressed after draws or searches so they do not depend on that completion's shuffle. The resulting features describe short-term consequences; they do not predict the opponent's full response.
+The probe fills hidden zones with a fixed completion rather than the opponent's actual hand. Some option-count features are suppressed after draws or searches so they do not depend on the reconstructed deck order. The resulting features describe short-term consequences; they do not predict the opponent's full response.
 
 ## 4. Training
 
 ### Stage 1: behavioural cloning
 
-I built the replay corpus from 136k episodes collected between 14 July and 12 August. I first trained a shared model across deck families, then fine-tuned it for each archetype. Sharing skills such as attaching and evolving helps decks with fewer demonstrations.
+I built the replay corpus from 136k episodes collected between 14 July and 12 August. I first trained a shared model across archetypes, then fine-tuned it for each archetype. Sharing skills such as attaching and evolving helps decks with fewer demonstrations.
 
 I weight decisions from winners at 1.0 and losers at 0.3, with ten-day recency decay and extra weight for stronger players.
 
@@ -97,7 +97,7 @@ Terminal rewards are +1 for wins, −1 for losses and 0 for draws. Clipping disc
 
 **Why such a large rollout?** I first increased the decisions collected per update from 131k to 524k and saw the training win-rate plateau rise. That result prompted a direct jump to 8.39 million, sixteen times the previous rollout. Training win rate rose slowly at first, then reached a higher plateau.
 
-With a small rollout, rare matchups contribute few games, so a lucky opening can have an outsized effect on an update. A larger rollout includes more games and both turn orders before each update. Mean absolute advantage fell from 0.35 initially to 0.16 near the peak training win rate. My interpretation is that broader sampling helps distinguish these smaller signals from game-to-game variation. The cost is fewer policy updates for the same number of decisions, which helps explain the slower initial progress.
+With a small rollout, rare matchups contribute few games, so a lucky opening can have an outsized effect on an update. A larger rollout includes more games and both turn orders before each update. Mean absolute advantage fell from 0.35 initially to 0.16 near the peak training win rate. I think collecting more games helps separate small advantage estimates from game-to-game noise. The cost is fewer policy updates for the same number of decisions, which helps explain the slower initial progress.
 
 ![Training progress and turn order](report_training_evidence.png)
 
@@ -107,7 +107,7 @@ Using 8×RTX 4090, the final PPO run completed 57 updates in 56.3 hours. Its tra
 
 ## 5. Results in real Kaggle battles
 
-I analyzed 1,000 completed games from each final submission during 21–31 August: 1,144 wins, three draws and 853 losses overall. With draws counted as half a win, win rates were 57.3% overall and 56.8% and 57.8% per submission.
+I analyzed 1,000 completed games from each final submission during 21–31 August: 1,144 wins, three draws and 853 losses overall. The overall win rate was 57.3%, counting draws as half a win. The two submissions achieved 56.8% and 57.8%, respectively.
 
 Restricting the absolute pre-game rating gap to 200 leaves 1,800 games at **53.5%**, with an approximate 95% interval of **51.2–55.8%**. The other 200 games had a 91.5% win rate. This rating split helps interpret opponent strength; it does not identify the API's actual matchmaking mode.
 
@@ -117,7 +117,7 @@ Restricting the absolute pre-game rating gap to 200 leaves 1,800 games at **53.5
 
 Within this group, I won **53 of 74 games against the identical decklist: 71.6% [60.5–80.6%]**. These games help assess how well the policy plays with the cards held fixed, though opponent strength still varies.
 
-My win rate was 55.4% against Dragapult's Jamming Tower build and 42.9% against Risky Ruins. Against Espeon–Sylveon, it was 12.5% over 32 games: having non-ex attackers did not make that plan reliable. My 45.7% win rate against Alakazam over 138 games showed how much harder real competitors were than training clones.
+My win rate was 55.4% against Dragapult's Jamming Tower build and 42.9% against Risky Ruins. Against Espeon–Sylveon, it was 12.5% over 32 games: having non-ex attackers did not make that plan reliable. My 45.7% win rate against Alakazam over 138 games showed how much harder real competitors were than the BC opponents used in training.
 
 ## 6. What I tried that did not work
 
@@ -129,4 +129,4 @@ My win rate was 55.4% against Dragapult's Jamming Tower build and 42.9% against 
 
 I would use a shared inference service to batch decisions from multiple games. Faster inference would let me collect more training experience within the same budget.
 
-I would set aside time for a second deck earlier and give the first deck a firm training budget. That would leave time to train and evaluate an alternative before submission.
+I would cap the first deck's training budget earlier, leaving enough time to train and evaluate a second deck before submission.
