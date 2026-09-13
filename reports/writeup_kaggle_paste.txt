@@ -1,4 +1,4 @@
-# Turning Lookahead into Features for PPO
+# Ogerpon–Hydrapple with Engine Lookahead and Large-Rollout PPO
 
 **Subtitle:** Ninth place in the Simulation track with a 7.8M-parameter policy, without MCTS at play time.
 
@@ -118,7 +118,7 @@ Using 8×RTX 4090, the final PPO run completed 57 updates in 56.3 hours. Its tra
 
 ## 5. Results in real Kaggle battles
 
-I analyzed 1,000 completed games from each final submission during 21–31 August: 1,144 wins, three draws and 853 losses overall. The overall win rate was 57.3%, counting draws as half a win. The two submissions achieved 56.8% and 57.8%, respectively.
+I analyzed 1,000 completed games from each final submission during 21–31 August: 1,144 wins, three draws and 853 losses overall. The win rate was 57.3%, counting draws as half a win. The two submissions achieved 56.8% and 57.8%, respectively.
 
 Restricting the absolute pre-game rating gap to 200 leaves 1,800 games at **53.5%**, with an approximate 95% interval of **51.2–55.8%**. The other 200 games had a 91.5% win rate. This rating split helps interpret opponent strength; it does not identify the API's actual matchmaking mode.
 

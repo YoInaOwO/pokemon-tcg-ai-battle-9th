@@ -1,4 +1,4 @@
-# Turning Lookahead into Features for PPO
+# Ogerpon–Hydrapple with Engine Lookahead and Large-Rollout PPO
 
 Ninth place in the [Pokémon Trading Card Game AI Battle Challenge](https://www.kaggle.com/competitions/pokemon-tcg-ai-battle)
 (Simulation track) with a 7.8M-parameter policy, without MCTS at play time.
