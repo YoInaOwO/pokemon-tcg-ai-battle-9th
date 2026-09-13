@@ -69,9 +69,13 @@ rows = sorted([r for r in rows if r[1] >= 15], key=lambda r: r[1])
 fig, ax = plt.subplots(figsize=(10, 6.2))
 for i, (k, g, wr, lo, hi) in enumerate(rows):
     col = BLUE if wr >= 50 else RED
-    ax.plot([lo, hi], [i, i], color=MUTED, lw=1.4, alpha=.6, solid_capstyle="butt")
-    ax.plot([50, wr], [i, i], color=col, lw=2.4)
-    ax.plot(wr, i, "o", color=col, ms=7, mec="white", mew=1.5)
+    # Offset the complete interval so the colored deviation line cannot hide it.
+    ci_y = i + .19
+    ax.plot([lo, hi], [ci_y, ci_y], color=MUTED, lw=1.4,
+            solid_capstyle="butt", zorder=3)
+    ax.vlines([lo, hi], ci_y - .065, ci_y + .065, color=MUTED, lw=1.2, zorder=3)
+    ax.plot([50, wr], [i, i], color=col, lw=2.4, zorder=2)
+    ax.plot(wr, i, "o", color=col, ms=7, mec="white", mew=1.5, zorder=4)
     ax.text(101, i, f"{wr:.1f}%", va="center", fontsize=9, color=col, fontweight="bold")
     ax.text(-1, i, f"{EN.get(k, k)}  ({g})", va="center", ha="right", fontsize=9, color=INK)
 ax.axvline(50, color="#c3c2b7", lw=1.4)

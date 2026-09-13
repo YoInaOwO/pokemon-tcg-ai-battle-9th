@@ -36,15 +36,13 @@ Type and position embeddings distinguish zones and slots; padding masks exclude 
 
 Each legal option is represented by its features and the card, target and attack it refers to. Cross-attention lets it read the state: an option targeting a bench slot can read that Pokémon's HP and Energy. The first encoded token gives the global representation, `h = X[0]`. An MLP scores `[o, h, o ⊙ h]`, combining option, state and their interaction. A separate head predicts the selection count.
 
-The same scoring network evaluates each candidate. It can therefore handle prompts with different numbers of options and reuse what it learns across actions.
+A shared scoring network handles varying numbers of candidates and transfers what it learns across actions.
 
 The count head reads the global state and mean option representation. Its 24 classes cover counts 0–23; masks enforce the prompt's limits, and successive picks exclude previously selected options.
 
 Two critics estimate returns during training; the oracle critic additionally receives an opponent-hand snapshot. An auxiliary head predicts future Prize gains. Deployment runs the policy in NumPy, with engine features and without online MCTS.
 
 ## 3. Feature engineering
-
-I encode resources, public history and action consequences explicitly.
 
 | Block | Width | Information and purpose |
 |---|---|---|
@@ -76,7 +74,7 @@ I weight decisions from winners at 1.0 and losers at 0.3, with ten-day recency d
 
 ### Stage 2: value fine-tune
 
-Before PPO, I generated games with the starting policy and fitted both critics to their outcomes, keeping the policy frozen. This calibrates value estimates to states the agent actually visits. PPO uses the difference between returns and predicted values to guide its updates, so calibrating the critics first gives it a more useful baseline.
+Before PPO, I generated games with the starting policy and fitted both critics to their outcomes, keeping the policy frozen. This calibrates value estimates to states the agent actually visits, giving PPO a baseline for estimating action advantages.
 
 ### Stage 3: PPO
 
@@ -113,20 +111,22 @@ Restricting the absolute pre-game rating gap to 200 leaves 1,800 games at **53.5
 
 ![Win rate by opponent build](writeup_fig4_matchups.png)
 
-*Figure 3. “Elo-matched” means rating gap ≤200. Groups with ≥15 games are shown; omitted games remain in the aggregate. “Mirror” includes all Hydrapple lists. Grey bars show approximate Wilson 95% intervals; repeated opponents can make them optimistic.*
+*Figure 3. “Elo-matched” means rating gap ≤200. Groups with ≥15 games are shown; omitted games remain in the aggregate. “Mirror” includes all Hydrapple lists. Grey bars above each row show approximate Wilson 95% intervals; repeated opponents can make them optimistic.*
 
 Within this group, I won **53 of 74 games against the identical decklist: 71.6% [60.5–80.6%]**. These games help assess how well the policy plays with the cards held fixed, though opponent strength still varies.
 
-My win rate was 55.4% against Dragapult's Jamming Tower build and 42.9% against Risky Ruins. Against Espeon–Sylveon, it was 12.5% over 32 games: having non-ex attackers did not make that plan reliable. My 45.7% win rate against Alakazam over 138 games showed how much harder real competitors were than the BC opponents used in training.
+My win rate was 55.4% against Dragapult's Jamming Tower build and 42.9% against Risky Ruins. Against Alakazam, it was 45.7% over 138 games. Win rates against both archetypes were lower than in training; these evaluations use different opponents and decklists.
+
+Against Espeon–Sylveon, my win rate was 12.5% over 32 games. Sylveon's Safeguard blocks attack damage from my main ex attackers. Meganium and Tapu Bulu can bypass it, but Espeon's Psych Out can knock out either from full HP. This gives the opposing deck answers to both my main attackers and their backups.
 
 ## 6. What I tried that did not work
 
-**MCTS.** I tried determinized MCTS with policy priors and critic leaf values, but found no useful improvement over the policy. Under a short action budget, search must divide its work across sampled hidden states. Each tree also plans as if its sampled state were certain. I retained bounded feature probes for submission.
+**MCTS.** I tried determinized MCTS with policy priors and critic leaf values, but found no useful improvement over the policy. Under a short action budget, search must divide its work across sampled hidden states. Each tree also plans as if its sampled state were certain.
 
 **A larger network.** More capacity did not help either. The network already receives detailed action consequences, so I chose to spend the budget on more training experience.
 
 ## 7. What I would improve
 
-I would use a shared inference service to batch decisions from multiple games. Faster inference would let me collect more training experience within the same budget.
+I would batch decisions from multiple games through a shared inference service to collect more training experience within the same budget.
 
 I would cap the first deck's training budget earlier, leaving enough time to train and evaluate a second deck before submission.
