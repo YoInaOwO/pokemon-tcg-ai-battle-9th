@@ -34,9 +34,7 @@ The observation becomes 64 tokens, which a five-layer Transformer with width 384
 
 Type and position embeddings distinguish zones and slots; padding masks exclude empty hand and revealed-card slots from attention.
 
-Each legal option is represented by its features and the card, target and attack it refers to. Cross-attention lets it read the state: an option targeting a bench slot can read that Pokémon's HP and Energy. The first encoded token gives the global representation, `h = X[0]`. An MLP scores `[o, h, o ⊙ h]`, combining option, state and their interaction.
-
-A shared scoring network handles varying numbers of candidates and transfers what it learns across actions.
+Each decision supplies the visible state and all legal candidates. With global representation `h = X[0]`, a shared MLP scores `[o, h, o ⊙ h]`, combining option, state and their interaction.
 
 The count head reads the global state and mean option representation. Its 24 classes cover counts 0–23; masks enforce the prompt's limits, and successive picks exclude previously selected options.
 
@@ -69,7 +67,9 @@ Opponent belief estimates the opposing archetype. I match publicly revealed card
 
 The probe lets the policy compare actions using their immediate consequences. For eligible main-phase, single-selection decisions, it executes up to 64 candidates in temporary engine states, follows forced continuations and branches on coin flips within fixed limits. It appends 28 features to each option, including damage, knockouts, Prize gains, hand/deck count changes and changes in legal attacks.
 
-For example, attaching Energy can unlock Hydrapple's attack. The engine reports that change; the policy decides whether to attack now or use another Ability first. Hidden zones use a fixed completion to run these trials, so effects depending on hidden card identities remain approximate. The probe does not plan the opponent's response; option counts are suppressed after draws or searches.
+Consider attaching Energy to Hydrapple. Its board token combines 32 state values with four 64-value card representations: Pokémon, first Tool and first two Energy cards. The resulting 288 values are projected to 384. The attachment candidate combines 60 action features, 28 probe features and card, target and attack representations. The probe can flag an unlocked attack; cross-attention reads the whole state before the policy scores this attachment against other actions.
+
+Hidden zones use a fixed completion to run these trials, so effects depending on hidden card identities remain approximate. The probe does not plan the opponent's response; option counts are suppressed after draws or searches.
 
 ## 4. Training
 
