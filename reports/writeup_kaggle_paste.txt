@@ -44,7 +44,7 @@ Two critics estimate returns during training. The oracle critic also receives an
 
 ## 3. Feature engineering
 
-I encode cards first, then combine their representations with the current game state. All 1,267 cards have 207 static features in the same format; fields that do not apply are zero.
+All 1,267 cards have 207 static features in the same format; fields that do not apply are zero.
 
 | Card features | Width | Examples |
 |---|---|---|
@@ -54,15 +54,16 @@ I encode cards first, then combine their representations with the current game s
 
 I extract effect fields from card text using rules and stored corrections. The model maps the card features to 64 values and adds a vector learned separately for each card. This preserves card identity even when effect features match. During training, ID dropout sometimes removes that separate vector, encouraging use of the shared features. These features cannot encode every rule.
 
-I combine card representations with current HP, Energy and other game information:
+Card representations combine with game information:
 
-| State information | Encoding |
-|---|---|
-| Tools | Presence, count and the first attached Tool's card representation |
-| Evolution | Current card's stage, number of cards beneath it and whether it entered play this turn |
-| Card zones | Card IDs, masks and counts for hand, revealed cards, discards and my unseen cards (deck and unrevealed Prizes) |
-| Global state and history | Turn order, resources, action usage, recent events and remembered public cards |
-| Decision and candidates | Prompt, selection limits, action type, card, target and attack |
+| State information | Width before embedding | Encoding |
+|---|---|---|
+| Board | 18 × (32 + 4 IDs) | HP, Energy, Tool count and first ID, cards beneath the Pokémon and arrival timing |
+| Card zones | 30 hand; 8 revealed; 60 per bag | IDs, masks and counts for hand, revealed cards, discards and unseen cards (deck and unrevealed Prizes) |
+| Global state | 40 + 21 | Turn order, resources, action usage and opponent belief |
+| History | 26 + 26 IDs | Recent events and remembered public cards |
+| Selection context | 68 + 2 IDs | Prompt and selection limits |
+| Each candidate | 60 + 3 IDs | Action type, card, target and attack |
 
 Opponent belief estimates the opposing archetype. I match publicly revealed cards against replay decklists, weight by frequency and overlap, then aggregate into probabilities over 14 archetypes plus “other”. BC dropout sometimes replaces this distribution with “unknown”.
 
