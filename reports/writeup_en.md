@@ -107,9 +107,9 @@ Using 8×RTX 4090, the final PPO run completed 57 updates in 56.3 hours. Its tra
 
 ## 5. Results in real Kaggle battles
 
-I analyzed 1,000 completed games from each final submission during 21–31 August: 1,144 wins, three draws and 853 losses overall. Counting draws as half a win gives 57.3%; the submissions separately scored 56.8% and 57.8%.
+I analyzed 1,000 completed games from each final submission during 21–31 August: 1,144 wins, three draws and 853 losses overall. With draws counted as half a win, win rates were 57.3% overall and 56.8% and 57.8% per submission.
 
-Restricting the absolute pre-game rating gap to 200 leaves 1,800 games at **53.5%**, with an approximate 95% interval of **51.2–55.8%**. The remaining 200 games scored 91.5%. This rating split helps interpret opponent strength; it does not identify the API's actual matchmaking mode.
+Restricting the absolute pre-game rating gap to 200 leaves 1,800 games at **53.5%**, with an approximate 95% interval of **51.2–55.8%**. The other 200 games had a 91.5% win rate. This rating split helps interpret opponent strength; it does not identify the API's actual matchmaking mode.
 
 ![Win rate by opponent build](writeup_fig4_matchups.png)
 
@@ -117,7 +117,7 @@ Restricting the absolute pre-game rating gap to 200 leaves 1,800 games at **53.5
 
 Within this group, I won **53 of 74 games against the identical decklist: 71.6% [60.5–80.6%]**. These games help assess how well the policy plays with the cards held fixed, though opponent strength still varies.
 
-I scored 55.4% against Dragapult's Jamming Tower build and 42.9% against Risky Ruins. Against Espeon–Sylveon, I scored just 12.5% over 32 games: having non-ex attackers did not make that plan reliable. My 45.7% against Alakazam over 138 games showed how much harder real competitors were than the cloned training opponents.
+My win rate was 55.4% against Dragapult's Jamming Tower build and 42.9% against Risky Ruins. Against Espeon–Sylveon, it was 12.5% over 32 games: having non-ex attackers did not make that plan reliable. My 45.7% win rate against Alakazam over 138 games showed how much harder real competitors were than training clones.
 
 ## 6. What I tried that did not work
 

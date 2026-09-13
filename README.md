@@ -55,12 +55,12 @@ and model weights.
 
 Increasing decisions per update from 131k to 524k raised the training win-rate
 plateau, prompting a direct jump to 8.39M. Using 8×RTX 4090, the final PPO run
-completed 57 updates in 56.3 hours. Its training score peaked at
+completed 57 updates in 56.3 hours. Its training win rate peaked at
 83.3%; the report explains the opponent pool, metric and rollout tradeoffs.
 
-Across 2,000 real Kaggle games, the final submissions scored 57.3%, counting
-draws as half a win. The 1,800 games with a pre-game rating gap of at most 200
-scored 53.5%. See the report for matchup results and how this sample differs
+Across 2,000 real Kaggle games, the final submissions had a combined win rate
+of 57.3%, counting draws as half a win. The win rate was 53.5% in the 1,800
+games with a pre-game rating gap of at most 200. See the report for matchup results and how this sample differs
 from the cloned training opponents.
 
 Determinized MCTS and a larger network did not provide useful improvements.
