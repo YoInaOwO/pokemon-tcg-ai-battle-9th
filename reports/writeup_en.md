@@ -4,7 +4,7 @@
 
 Thank you to the organizers and Kaggle for hosting, and to all participants for the matches.
 
-**TL;DR.** Both final submissions used the same decklist and model weights. A 7.8M-parameter network scores legal actions from the board state and short engine probes. I trained it through behavioural cloning, value fine-tune and PPO against a pool based on the arena. The final PPO run used 8.39 million decisions per update and took 56.3 hours. The agent finished ninth.
+**TL;DR.** Both final submissions used the same decklist and model weights. A 7.8M-parameter network scores legal actions from the board state and short engine probes. I trained it through behavioural cloning, value fine-tune and PPO against a pool based on the arena. The agent finished ninth.
 
 ## 1. Deck: Ogerpon–Hydrapple
 
@@ -68,7 +68,7 @@ The probe fills hidden zones with a fixed completion rather than the opponent's 
 
 ### Stage 1: behavioural cloning
 
-I built the replay corpus from 136k episodes collected between 14 July and 12 August. I first trained a shared model across archetypes, then fine-tuned it for each archetype. Sharing skills such as attaching and evolving helps decks with fewer demonstrations.
+I built the replay corpus from 136k episodes collected between 14 July and 12 August. The shared model learned to imitate recorded decisions from both players across all deck archetypes. I then initialized each archetype model from that checkpoint and fine-tuned the full network at a lower learning rate, using only decisions made while playing that archetype. Different exact decklists within an archetype contributed to the same model.
 
 I weight decisions from winners at 1.0 and losers at 0.3, with ten-day recency decay and extra weight for stronger players.
 
@@ -115,7 +115,7 @@ Restricting the absolute pre-game rating gap to 200 leaves 1,800 games at **53.5
 
 Within this group, I won **53 of 74 games against the identical decklist: 71.6% [60.5–80.6%]**. These games help assess how well the policy plays with the cards held fixed, though opponent strength still varies.
 
-My win rate was 55.4% against Dragapult's Jamming Tower build and 42.9% against Risky Ruins. Against Alakazam, it was 45.7% over 138 games. My win rate in real Kaggle battles was lower than in the BC training pool, which used different opponents and decklists.
+The win rates suggest that, for most archetypes, Kaggle opponents played better than my BC models. Those models still provided useful opponents for PPO training and a consistent benchmark for tracking the policy's progress.
 
 Against Espeon–Sylveon, my win rate was 12.5% over 32 games. Sylveon's Safeguard blocks attack damage from my main ex attackers. Meganium and Tapu Bulu can bypass it, but Espeon's Psych Out can knock out either from full HP. This gives the opposing deck answers to both my main attackers and their backups.
 
