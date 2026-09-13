@@ -4,7 +4,7 @@
 
 Thank you to the organizers and Kaggle for hosting, and to all participants for the matches.
 
-**TL;DR.** Both final submissions used the same decklist and model weights. A 7.8M-parameter network scores legal actions from the board state and short engine probes. I trained it through behavioural cloning, value fine-tune and PPO against a pool based on the arena. The agent finished ninth.
+**TL;DR.** Both final submissions used the same decklist and model weights. Bounded engine lookahead supplies action consequences to a 7.8M-parameter policy that learns action sequencing and resource allocation. I trained it through behavioural cloning, value fine-tune and PPO against a pool based on the arena. The agent finished ninth.
 
 ## 1. Deck: Ogerpon–Hydrapple
 
@@ -40,7 +40,7 @@ A shared scoring network handles varying numbers of candidates and transfers wha
 
 The count head reads the global state and mean option representation. Its 24 classes cover counts 0–23; masks enforce the prompt's limits, and successive picks exclude previously selected options.
 
-Two critics estimate returns during training; the oracle critic additionally receives an opponent-hand snapshot. An auxiliary head predicts future Prize gains. Deployment runs the policy in NumPy, with engine features and without online MCTS.
+Two critics estimate returns during training. The oracle critic also receives an opponent-hand snapshot to reduce uncertainty in its value estimates and give PPO a more informative baseline. This private input never enters the policy. An auxiliary head predicts future Prize gains. At deployment, the policy runs in NumPy with engine features and without online MCTS.
 
 ## 3. Feature engineering
 
@@ -58,9 +58,9 @@ Opponent belief estimates deck archetypes from publicly revealed opponent cards.
 
 For eligible main-phase, single-selection decisions, the probe evaluates up to 64 candidates, following forced continuations and coin-flip branches within a bounded expansion.
 
-HP is scaled by 400. Selection counts use logarithms so that large forced selections remain distinguishable. Target attributes and action effects together let the same card receive different scores in different positions.
+Target attributes and action effects together let the same card receive different scores in different positions.
 
-For example, attaching Energy may make Hydrapple's attack legal. The probe exposes that change; the policy still decides whether to attack now or use another Ability first to reach a knockout threshold. The engine supplies local consequences while the network learns sequencing and resource tradeoffs.
+For example, attaching Energy may make Hydrapple's attack legal. The probe exposes that change; the policy still decides whether to attack now or use another Ability first to reach a knockout threshold.
 
 The probe fills hidden zones with a fixed completion rather than the opponent's actual hand. Some option-count features are suppressed after draws or searches so they do not depend on the reconstructed deck order. The resulting features describe short-term consequences; they do not predict the opponent's full response.
 
@@ -70,7 +70,7 @@ The probe fills hidden zones with a fixed completion rather than the opponent's 
 
 I built the replay corpus from 136k episodes collected between 14 July and 12 August. The shared model learned to imitate recorded decisions from both players across all deck archetypes. I then initialized each archetype model from that checkpoint and fine-tuned the full network at a lower learning rate, using only decisions made while playing that archetype. Different exact decklists within an archetype contributed to the same model.
 
-I weight decisions from winners at 1.0 and losers at 0.3, with ten-day recency decay and extra weight for stronger players.
+I weighted decisions from winners at 1.0 and losers at 0.3, with ten-day recency decay and extra weight for stronger players.
 
 ### Stage 2: value fine-tune
 
@@ -99,7 +99,7 @@ With a small rollout, rare matchups contribute few games, so a lucky opening can
 
 ![Training progress and turn order](report_training_evidence.png)
 
-*Figure 2. Left: arena-weighted training win rates using rolling windows of up to 300 games per fixed cloned opponent; scripts, mutants and mirrors are excluded. Right: first/second-player win rates during rollout 48; n combines both orders. Draws count half.*
+*Figure 2. Left: arena-weighted training win rates using rolling windows of up to 300 games per fixed cloned opponent; scripts, mutants and mirrors are excluded. Right: first/second-player win rates during rollout 48; n combines both orders. Draws count as half a win.*
 
 Using 8×RTX 4090, the final PPO run completed 57 updates in 56.3 hours. Its training win rate rose from 52.4% to 83.3% at update 48, after 403 million decisions; updates 45–57 stayed between 80.5% and 83.3%. Turn order remained important against Alakazam: 63.5% going first versus 50.6% second, compared with 83.9% versus 83.7% against Dragapult.
 
@@ -121,7 +121,7 @@ Against Espeon–Sylveon, my win rate was 12.5% over 32 games. Sylveon's Safegua
 
 ## 6. What I tried that did not work
 
-**MCTS.** I tried determinized MCTS with policy priors and critic leaf values, but found no useful improvement over the policy. Under a short action budget, search must divide its work across sampled hidden states. Each tree also plans as if its sampled state were certain.
+**MCTS.** I tried determinized MCTS with policy priors and critic leaf values, but found no useful improvement over the policy. With limited time per action, search must divide its work across sampled hidden states. Each tree also plans as if its sampled state were certain.
 
 **A larger network.** More capacity did not help either. The network already receives detailed action consequences, so I chose to spend the budget on more training experience.
 
