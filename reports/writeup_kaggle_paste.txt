@@ -67,11 +67,7 @@ Opponent belief estimates the opposing archetype. I match publicly revealed card
 
 The probe supplies immediate consequences for comparing actions. For eligible main-phase, single-selection decisions, it executes up to 64 candidates in temporary engine states, follows forced continuations and branches on coin flips within fixed limits. It appends 28 features to each option, including damage, knockouts, Prize gains, hand/deck count changes and changes in legal attacks.
 
-Consider attaching Energy to Hydrapple. The model receives both boards, card zones, global state, history, selection context and all legal candidates together. Hydrapple's board token combines 32 state values with four 64-value card representations: Pokémon, first Tool and first two Energy cards. The resulting 288 values are projected to 384.
-
-Cross-attention lets each candidate read the full state. The attachment's probe features can flag an unlocked attack, while hand resources and opposing threats help the policy compare it with other legal moves.
-
-Hidden zones use a fixed completion to run these trials, so effects depending on hidden card identities remain approximate. The probe does not plan the opponent's response; option counts are suppressed after draws or searches.
+Consider attaching Energy to Hydrapple. The model receives both boards, card zones, global state, history, selection context and all legal candidates together. Hydrapple's board token combines 32 state values with four 64-value card representations: Pokémon, first Tool and first two Energy cards. The resulting 288 values are projected to 384. Cross-attention lets each candidate read the full state. The attachment's probe features can flag an unlocked attack, while hand resources and opposing threats help the policy compare it with other legal moves.
 
 ## 4. Training
 
