@@ -30,11 +30,11 @@ Bug Catching Set finds Energy and Grass Pokémon; Dawn finds the three evolution
 
 *Figure 1. State encoding, option scoring and separate training heads. The opponent-hand input enters only the oracle critic.*
 
-The observation becomes 64 tokens, which a five-layer Transformer with width 384 and six attention heads encodes.
+State inputs are grouped into 64 tokens and encoded by a five-layer Transformer with width 384 and six attention heads.
 
 Type and position embeddings distinguish zones and slots; padding masks exclude empty hand and revealed-card slots from attention.
 
-With global representation `h = X[0]`, a shared MLP scores `[o, h, o ⊙ h]`, combining option, state and their interaction.
+A shared MLP scores each option using its representation, the first encoded state token and their elementwise product.
 
 The count head reads the global state and mean option representation. Its 24 classes cover counts 0–23; masks enforce the prompt's limits, and successive picks exclude previously selected options.
 
@@ -50,7 +50,7 @@ All 1,267 cards have 207 static features in the same format; fields that do not 
 | Ability and Trainer effects | 32 | Draw, search, attach Energy, heal, accelerate evolution; usage limits and effect magnitudes |
 | Two attacks | 2 × 59 | Damage, Energy costs, coin flips and damage scaling with Energy or Prizes |
 
-Rule-based text parsing and stored corrections supply the effect fields. The model projects all card features to 64 values and adds a vector learned separately for each card, preserving identity when effect features match. ID dropout sometimes removes that vector during training.
+Rule-based text parsing and stored corrections supply the effect fields. The model projects each card's features to 64 values and adds a vector learned separately for each card, preserving identity when effect features match. ID dropout sometimes removes that vector during training.
 
 Card representations combine with game information:
 
