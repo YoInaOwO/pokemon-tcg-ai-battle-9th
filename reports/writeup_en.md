@@ -111,11 +111,11 @@ Restricting the absolute pre-game rating gap to 200 leaves 1,800 games at **53.5
 
 ![Win rate by opponent build](writeup_fig4_matchups.png)
 
-*Figure 3. “Elo-matched” means rating gap ≤200. Groups with ≥15 games are shown; omitted games remain in the aggregate. “Mirror” includes all Hydrapple lists. Grey bars above each row show approximate Wilson 95% intervals; repeated opponents can make them optimistic.*
+*Figure 3. “Elo-matched” means rating gap ≤200. Groups with ≥15 games are shown; omitted games remain in the aggregate. “Mirror” includes all Hydrapple lists. Dots show win rates; grey bars show approximate Wilson 95% intervals. Repeated opponents can make the intervals optimistic.*
 
 Within this group, I won **53 of 74 games against the identical decklist: 71.6% [60.5–80.6%]**. These games help assess how well the policy plays with the cards held fixed, though opponent strength still varies.
 
-My win rate was 55.4% against Dragapult's Jamming Tower build and 42.9% against Risky Ruins. Against Alakazam, it was 45.7% over 138 games. Win rates against both archetypes were lower than in training; these evaluations use different opponents and decklists.
+My win rate was 55.4% against Dragapult's Jamming Tower build and 42.9% against Risky Ruins. Against Alakazam, it was 45.7% over 138 games. My win rate in real Kaggle battles was lower than in the BC training pool, which used different opponents and decklists.
 
 Against Espeon–Sylveon, my win rate was 12.5% over 32 games. Sylveon's Safeguard blocks attack damage from my main ex attackers. Meganium and Tapu Bulu can bypass it, but Espeon's Psych Out can knock out either from full HP. This gives the opposing deck answers to both my main attackers and their backups.
 
