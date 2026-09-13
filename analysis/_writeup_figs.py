@@ -1,7 +1,7 @@
 """Draw the matchup chart used by the current Strategy-track report.
 
 Reads build/postgap_mu.json, a local aggregate not distributed in this repo.
-Writes reports/writeup_fig4_matchups.png (Figure 3 in the current report).
+Writes reports/writeup_fig4_matchups.png (Figure 4 in the current report).
 Named builds are shown separately, with Wilson 95% intervals. Groups with
 fewer than 15 games and games without recovered decklists are omitted from
 the chart; these omissions do not change the report's aggregate statistics.

@@ -49,6 +49,7 @@ and model weights.
 | `tools/run_ppo_hydra_15038_*.sh` | saved PPO training configurations |
 | `analysis/` | post-competition ladder analysis and the write-up figures |
 | `analysis/draw_model.py` | generates the current model diagram as PNG, SVG and PDF |
+| `analysis/plot_training_archetypes.py` | reproduces per-archetype training curves from the included CSV and metadata |
 | `models/hydra15038_model_weights.zip` | final trained weights and configuration, without the competition runtime or datasets |
 
 ## Training and results

@@ -1,0 +1,60 @@
+{
+  "source": "logs\\run_hydra_15038_r8m.log",
+  "source_sha256": "609bd84b872e6160315ecda95d2e195bcb37b349f61031aa9ec37115b4fde65e",
+  "best_update": 48,
+  "updates": 57,
+  "archetypes": 12,
+  "missing_values": 0,
+  "statistic": "Logged wr_arch, pooling per-deck rolling windows; not arena-frequency weighted within archetype.",
+  "smoothing": "None added; source already uses per-deck rolling windows.",
+  "start_end_percent": {
+    "Cynthia's Garchomp": [
+      82.69999999999999,
+      97.0
+    ],
+    "N's Zoroark": [
+      79.0,
+      95.0
+    ],
+    "M-Kangaskhan box": [
+      83.0,
+      93.89999999999999
+    ],
+    "M-Lopunny": [
+      63.7,
+      91.8
+    ],
+    "Ogerpon": [
+      64.2,
+      88.1
+    ],
+    "Grookey-Dipplin": [
+      41.699999999999996,
+      87.1
+    ],
+    "Marnie's Grimmsnarl": [
+      62.4,
+      86.7
+    ],
+    "Dragapult": [
+      52.1,
+      85.8
+    ],
+    "M-Kangaskhan + Crustle": [
+      25.0,
+      79.2
+    ],
+    "Ogerpon-Hydrapple": [
+      42.5,
+      79.0
+    ],
+    "M-Lucario": [
+      47.5,
+      77.0
+    ],
+    "Alakazam": [
+      21.4,
+      60.3
+    ]
+  }
+}

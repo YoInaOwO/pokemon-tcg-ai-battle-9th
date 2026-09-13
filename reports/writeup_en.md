@@ -34,7 +34,7 @@ The observation becomes 64 tokens covering global state, selection context, boar
 
 Type and position embeddings distinguish zones and slots; padding masks exclude empty hand and revealed-card slots from attention.
 
-Each legal option is represented by its features and the card, target and attack it refers to. Cross-attention lets it read the state: an option targeting a bench slot can read that Pokémon's HP and Energy. The first encoded token gives the global representation, `h = X[0]`. An MLP scores `[o, h, o ⊙ h]`, combining option, state and their interaction. A separate head predicts the selection count.
+Each legal option is represented by its features and the card, target and attack it refers to. Cross-attention lets it read the state: an option targeting a bench slot can read that Pokémon's HP and Energy. The first encoded token gives the global representation, `h = X[0]`. An MLP scores `[o, h, o ⊙ h]`, combining option, state and their interaction.
 
 A shared scoring network handles varying numbers of candidates and transfers what it learns across actions.
 
@@ -76,7 +76,7 @@ Using the fine-tuned Ogerpon–Hydrapple BC model, I generated games and fitted 
 
 ### Stage 3: PPO
 
-I was training one deck, so pure self-play would focus on mirror matches and miss other decks' threats and Prize trades. I built an opponent pool from the 12 August arena's 148 distinct lists, keeping mirrors as one component.
+Pure self-play with my fixed deck would miss other archetypes' threats and Prize trades. I therefore built an opponent pool from the 12 August arena's 148 distinct lists.
 
 | Opponent component | Share of games | Purpose |
 |---|---|---|
@@ -101,6 +101,10 @@ With a small rollout, rare matchups contribute few games, so a lucky opening can
 
 Using 8×RTX 4090, the final PPO run completed 57 updates in 56.3 hours. Its training win rate rose from 52.4% to 83.3% at update 48, after 403 million decisions; updates 45–57 stayed between 80.5% and 83.3%. Turn order remained important against Alakazam: 63.5% going first versus 50.6% second, compared with 83.9% versus 83.7% against Dragapult.
 
+![Training win rates by archetype](training_archetypes.png)
+
+*Figure 3. Training win rates against 12 BC archetypes, combining per-list rolling windows. All improved from the first recorded rollout to the last; Alakazam remained hardest.*
+
 ## 5. Results in real Kaggle battles
 
 I analyzed 1,000 completed games from each final submission during 21–31 August: 1,144 wins, three draws and 853 losses overall. The overall win rate was 57.3%, counting draws as half a win. The two submissions achieved 56.8% and 57.8%, respectively.
@@ -109,9 +113,9 @@ Restricting the absolute pre-game rating gap to 200 leaves 1,800 games at **53.5
 
 ![Win rate by opponent build](writeup_fig4_matchups.png)
 
-*Figure 3. “Elo-matched” means rating gap ≤200. Groups with ≥15 games are shown; omitted games remain in the aggregate. “Mirror” includes all Hydrapple lists. Dots show win rates; grey bars show approximate Wilson 95% intervals. Repeated opponents can make the intervals optimistic.*
+*Figure 4. “Elo-matched” means rating gap ≤200. Groups with ≥15 games are shown; omitted games remain in the aggregate. “Mirror” includes all Hydrapple lists. Dots show win rates; grey bars show approximate Wilson 95% intervals. Repeated opponents can make the intervals optimistic.*
 
-Among games with a rating gap ≤200, I won **53 of 74 games against the identical decklist: 71.6% [60.5–80.6%]**. These games help assess how well the policy plays with the cards held fixed, though opponent strength still varies.
+Among games with a rating gap ≤200, I won **53 of 74 games against the identical decklist: 71.6% [60.5–80.6%]**. Matching decklists help assess policy quality, though opponent strength still varies.
 
 Although the win rates showed a gap between my BC models and Kaggle opponents, as imitation learning struggles to surpass those it imitates, these models still provided useful opponents for PPO training and a consistent benchmark for tracking the policy's progress.
 
