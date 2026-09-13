@@ -66,9 +66,9 @@ I combine card representations with current HP, Energy and other game informatio
 
 Opponent belief estimates the opposing archetype. I match publicly revealed cards against replay decklists, weight by frequency and overlap, then aggregate into probabilities over 14 archetypes plus “other”. BC dropout sometimes replaces this distribution with “unknown”.
 
-The engine probe adds 28 features describing immediate action consequences. At eligible main-phase, single-selection decisions, it tests up to 64 candidates and follows bounded forced continuations and coin-flip branches. For example, it can show that attaching Energy unlocks Hydrapple's attack; the policy decides whether to attack or use another Ability first.
+The probe lets the policy compare actions using their immediate consequences. For eligible main-phase, single-selection decisions, it executes up to 64 candidates in temporary engine states, follows forced continuations and branches on coin flips within fixed limits. It appends 28 features to each option, including damage, knockouts, Prize gains, hand/deck count changes and changes in legal attacks.
 
-The engine needs complete hidden zones for these trials. I reconstruct my unseen cards from my decklist with a fixed shuffle; dummy cards fill the opponent's hidden zones without predicting their identities. The probe measures immediate effects, without planning opposing responses. Effects depending on hidden card identities can be inaccurate. After draws or searches, option counts are suppressed to avoid dependence on the reconstructed deck order.
+For example, attaching Energy can unlock Hydrapple's attack. The engine reports that change; the policy decides whether to attack now or use another Ability first. Hidden zones use a fixed completion to run these trials, so effects depending on hidden card identities remain approximate. The probe does not plan the opponent's response; option counts are suppressed after draws or searches.
 
 ## 4. Training
 
