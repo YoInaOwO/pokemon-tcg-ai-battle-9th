@@ -30,7 +30,7 @@ Bug Catching Set finds Energy and Grass Pokémon; Dawn finds the three evolution
 
 *Figure 1. State encoding, option scoring and separate training heads. The opponent-hand input enters only the oracle critic.*
 
-The observation becomes 64 tokens covering global state, selection context, board slots, hand, revealed cards, discard piles, public history, memory and my unseen cards (deck and unrevealed Prizes). A five-layer Transformer with width 384 and six attention heads encodes them. Card representations combine learned ID embeddings with projected static attributes and structured Ability/attack descriptions. ID dropout encourages the model to use those descriptions when card identities are unfamiliar.
+The observation becomes 64 tokens, which a five-layer Transformer with width 384 and six attention heads encodes.
 
 Type and position embeddings distinguish zones and slots; padding masks exclude empty hand and revealed-card slots from attention.
 
@@ -44,23 +44,31 @@ Two critics estimate returns during training. The oracle critic also receives an
 
 ## 3. Feature engineering
 
-| Block | Width | Information and purpose |
+I encode cards first, then combine their representations with the current game state. All 1,267 cards have 207 static features in the same format; fields that do not apply are zero.
+
+| Card features | Width | Examples |
 |---|---|---|
-| Global and opponent belief | 40 + 21 | Turn order, resource counts, once-per-turn usage; beliefs over 14 archetypes plus “other” supply matchup context. |
-| Selection context | 68 + 2 IDs | Prompt type, selection limits and remaining requirements distinguish attacks, searches and forced choices. |
-| Board | 18 × (32 + 4 IDs) | HP, damage, Energy, tools, evolution and arrival timing describe targets and development constraints. |
-| Card zones | IDs, masks, counts | 30 hand slots, 8 revealed-card slots, discard bags and my unseen-card pool describe accessible and recoverable resources. |
-| Log and memory | 26 + 26 IDs | Recent events, cumulative play/attachment counts, four attacks per side and up to 12 known opponent cards preserve information across decisions. |
-| Base option | 60 + IDs | Action type, location, card, target, attack, counts and target attributes identify what each candidate does. |
-| Engine lookahead | 28 | Damage, knockouts, Prize/resource changes and newly legal attacks expose immediate consequences. |
+| Basic attributes | 57 | Card type, HP, Weakness, retreat cost, evolution stage and ex status |
+| Ability and Trainer effects | 32 | Draw, search, attach Energy, heal, accelerate evolution; usage limits and effect magnitudes |
+| Two attacks | 2 × 59 | Damage, Energy costs, coin flips and damage scaling with Energy or Prizes |
 
-Opponent belief estimates deck archetypes from publicly revealed opponent cards. I match these against exact replay decklists, weight matches by frequency and card overlap, then sum weights by archetype and normalize. This distribution enters the global state. During BC, dropout sometimes replaces this distribution with “unknown” to reduce reliance on deck identification.
+I extract effect fields from card text using rules and stored corrections. The model maps the card features to 64 values and adds a vector learned separately for each card. This preserves card identity even when effect features match. During training, ID dropout sometimes removes that separate vector, encouraging use of the shared features. These features cannot encode every rule.
 
-For eligible main-phase, single-selection decisions, the probe evaluates up to 64 candidates, following forced continuations and coin-flip branches within a bounded expansion.
+I combine card representations with current HP, Energy and other game information:
 
-For example, attaching Energy may make Hydrapple's attack legal. The probe exposes that change; the policy still decides whether to attack now or use another Ability first to reach a knockout threshold.
+| State information | Encoding |
+|---|---|
+| Tools | Presence, count and the first attached Tool's card representation |
+| Evolution | Current card's stage, number of cards beneath it and whether it entered play this turn |
+| Card zones | Card IDs, masks and counts for hand, revealed cards, discards and my unseen cards (deck and unrevealed Prizes) |
+| Global state and history | Turn order, resources, action usage, recent events and remembered public cards |
+| Decision and candidates | Prompt, selection limits, action type, card, target and attack |
 
-The engine needs a complete state. The probe reconstructs my unseen cards from my decklist with a fixed shuffle and fills the opponent's hidden zones with placeholder Energy and Basic Pokémon. These are placeholders, not predictions. It extracts immediate effects such as damage and Prize changes, without planning the opponent's response. Effects that depend on hidden card identities can still be inaccurate. Option counts are suppressed after draws or searches to avoid dependence on the reconstructed deck order.
+Opponent belief estimates the opposing archetype. I match publicly revealed cards against replay decklists, weight by frequency and overlap, then aggregate into probabilities over 14 archetypes plus “other”. BC dropout sometimes replaces this distribution with “unknown”.
+
+The engine probe adds 28 features describing immediate action consequences. At eligible main-phase, single-selection decisions, it tests up to 64 candidates and follows bounded forced continuations and coin-flip branches. For example, it can show that attaching Energy unlocks Hydrapple's attack; the policy decides whether to attack or use another Ability first.
+
+The engine needs complete hidden zones for these trials. I reconstruct my unseen cards from my decklist with a fixed shuffle; dummy cards fill the opponent's hidden zones without predicting their identities. The probe measures immediate effects, without planning opposing responses. Effects depending on hidden card identities can be inaccurate. After draws or searches, option counts are suppressed to avoid dependence on the reconstructed deck order.
 
 ## 4. Training
 
