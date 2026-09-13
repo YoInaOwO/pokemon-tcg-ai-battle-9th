@@ -2,7 +2,7 @@
 
 **Subtitle:** Ninth place in the Simulation track with a 7.8M-parameter policy, without MCTS at play time.
 
-Thank you to the organizers, Kaggle and all participants.
+Thank you to the organizers and Kaggle for hosting, and to all participants for the matches.
 
 **TL;DR.** Both final submissions used the same decklist and model weights. Bounded engine lookahead supplies action consequences to a 7.8M-parameter policy that learns action sequencing and resource allocation. I trained it through behavioural cloning, value fine-tune and PPO against a pool based on the arena.
 
