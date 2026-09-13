@@ -34,7 +34,7 @@ The observation becomes 64 tokens, which a five-layer Transformer with width 384
 
 Type and position embeddings distinguish zones and slots; padding masks exclude empty hand and revealed-card slots from attention.
 
-Each decision supplies the visible state and all legal candidates. With global representation `h = X[0]`, a shared MLP scores `[o, h, o ⊙ h]`, combining option, state and their interaction.
+With global representation `h = X[0]`, a shared MLP scores `[o, h, o ⊙ h]`, combining option, state and their interaction.
 
 The count head reads the global state and mean option representation. Its 24 classes cover counts 0–23; masks enforce the prompt's limits, and successive picks exclude previously selected options.
 
@@ -65,9 +65,11 @@ Card representations combine with game information:
 
 Opponent belief estimates the opposing archetype. I match publicly revealed cards against replay decklists, weight by frequency and overlap, then aggregate into probabilities over 14 archetypes plus “other”. BC dropout sometimes replaces this distribution with “unknown”.
 
-The probe lets the policy compare actions using their immediate consequences. For eligible main-phase, single-selection decisions, it executes up to 64 candidates in temporary engine states, follows forced continuations and branches on coin flips within fixed limits. It appends 28 features to each option, including damage, knockouts, Prize gains, hand/deck count changes and changes in legal attacks.
+The probe supplies immediate consequences for comparing actions. For eligible main-phase, single-selection decisions, it executes up to 64 candidates in temporary engine states, follows forced continuations and branches on coin flips within fixed limits. It appends 28 features to each option, including damage, knockouts, Prize gains, hand/deck count changes and changes in legal attacks.
 
-Consider attaching Energy to Hydrapple. Its board token combines 32 state values with four 64-value card representations: Pokémon, first Tool and first two Energy cards. The resulting 288 values are projected to 384. The attachment candidate combines 60 action features, 28 probe features and card, target and attack representations. The probe can flag an unlocked attack; cross-attention reads the whole state before the policy scores this attachment against other actions.
+Consider attaching Energy to Hydrapple. The model receives both boards, card zones, global state, history, selection context and all legal candidates together. Hydrapple's board token combines 32 state values with four 64-value card representations: Pokémon, first Tool and first two Energy cards. The resulting 288 values are projected to 384.
+
+Cross-attention lets each candidate read the full state. The attachment's probe features can flag an unlocked attack, while hand resources and opposing threats help the policy compare it with other legal moves.
 
 Hidden zones use a fixed completion to run these trials, so effects depending on hidden card identities remain approximate. The probe does not plan the opponent's response; option counts are suppressed after draws or searches.
 
