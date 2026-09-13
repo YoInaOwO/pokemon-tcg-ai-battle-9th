@@ -54,7 +54,7 @@ Two critics estimate returns during training; the oracle critic additionally rec
 | Base option | 60 + IDs | Action type, location, card, target, attack, counts and target attributes identify what each candidate does. |
 | Engine lookahead | 28 | Damage, knockouts, Prize/resource changes and newly legal attacks expose immediate consequences. |
 
-Opponent belief estimates deck archetypes from publicly revealed opponent cards. I match these against exact replay decklists, weight matches by frequency and card overlap, then sum weights by archetype and normalize. This distribution enters the global state. Cloning dropout sometimes replaces it with “unknown” to reduce reliance on deck identification.
+Opponent belief estimates deck archetypes from publicly revealed opponent cards. I match these against exact replay decklists, weight matches by frequency and card overlap, then sum weights by archetype and normalize. This distribution enters the global state. During BC, dropout sometimes replaces this distribution with “unknown” to reduce reliance on deck identification.
 
 For eligible main-phase, single-selection decisions, the probe evaluates up to 64 candidates, following forced continuations and coin-flip branches within a bounded expansion.
 
@@ -113,7 +113,7 @@ Restricting the absolute pre-game rating gap to 200 leaves 1,800 games at **53.5
 
 *Figure 3. “Elo-matched” means rating gap ≤200. Groups with ≥15 games are shown; omitted games remain in the aggregate. “Mirror” includes all Hydrapple lists. Dots show win rates; grey bars show approximate Wilson 95% intervals. Repeated opponents can make the intervals optimistic.*
 
-Within this group, I won **53 of 74 games against the identical decklist: 71.6% [60.5–80.6%]**. These games help assess how well the policy plays with the cards held fixed, though opponent strength still varies.
+Among games with a rating gap ≤200, I won **53 of 74 games against the identical decklist: 71.6% [60.5–80.6%]**. These games help assess how well the policy plays with the cards held fixed, though opponent strength still varies.
 
 Although the win rates showed a gap between my BC models and Kaggle opponents, as imitation learning struggles to surpass those it imitates, these models still provided useful opponents for PPO training and a consistent benchmark for tracking the policy's progress.
 
