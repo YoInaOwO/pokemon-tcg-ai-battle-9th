@@ -8,7 +8,7 @@ Thank you to the organizers and Kaggle for hosting, and to all participants for 
 
 ## 1. Deck: Ogerpon–Hydrapple
 
-I chose a public list where Grass Energy helps draw cards, power attacks and increase damage. Getting these effects in the right order is central to playing the deck.
+I chose a public list where Grass Energy helps draw cards, power attacks and increase damage.
 
 | Package | Cards |
 |---|---|
@@ -58,8 +58,6 @@ Opponent belief estimates deck archetypes from publicly revealed opponent cards.
 
 For eligible main-phase, single-selection decisions, the probe evaluates up to 64 candidates, following forced continuations and coin-flip branches within a bounded expansion.
 
-Target attributes and action effects together let the same card receive different scores in different positions.
-
 For example, attaching Energy may make Hydrapple's attack legal. The probe exposes that change; the policy still decides whether to attack now or use another Ability first to reach a knockout threshold.
 
 The probe fills hidden zones with a fixed completion rather than the opponent's actual hand. Some option-count features are suppressed after draws or searches so they do not depend on the reconstructed deck order. The resulting features describe short-term consequences; they do not predict the opponent's full response.
@@ -74,7 +72,7 @@ I weighted decisions from winners at 1.0 and losers at 0.3, with ten-day recency
 
 ### Stage 2: value fine-tune
 
-Before PPO, I generated games with the starting policy and fitted both critics to their outcomes, keeping the policy frozen. This calibrates value estimates to states the agent actually visits, giving PPO a baseline for estimating action advantages.
+Using the fine-tuned Ogerpon–Hydrapple BC model, I generated games and fitted both critics to their outcomes while keeping the policy frozen. PPO started from this value-tuned Ogerpon–Hydrapple checkpoint, with value estimates calibrated to states the policy visits.
 
 ### Stage 3: PPO
 
@@ -127,6 +125,6 @@ Against Espeon–Sylveon, my win rate was 12.5% over 32 games. Sylveon's Safegua
 
 ## 7. What I would improve
 
-I would batch decisions from multiple games through a shared inference service to collect more training experience within the same budget.
+I managed my time poorly in this competition and ran out of time to train a new model for another deck. I would cap the first deck's training budget earlier, leaving enough time to train and evaluate a second deck before submission.
 
-I would cap the first deck's training budget earlier, leaving enough time to train and evaluate a second deck before submission.
+I would batch decisions from multiple games through a shared inference service to collect more training experience within the same budget.
