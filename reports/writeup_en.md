@@ -61,7 +61,7 @@ Card representations combine with game information:
 | Global state | 40 + 21 | Turn order, resources, action usage and opponent belief |
 | History | 26 + 26 IDs | Recent events and remembered public cards |
 | Selection context | 68 + 2 IDs | Prompt and selection limits |
-| Each candidate | 60 + 3 IDs | Action type, card, target and attack |
+| Each candidate | 60 + 28 + 3 IDs | Base features, probe results; card, target and attack IDs |
 
 Opponent belief estimates the opposing archetype. I match publicly revealed cards against replay decklists, weight by frequency and overlap, then aggregate into probabilities over 14 archetypes plus “other”. BC dropout sometimes replaces this distribution with “unknown”.
 
