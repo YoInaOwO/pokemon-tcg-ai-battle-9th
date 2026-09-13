@@ -83,7 +83,7 @@ I weighted decisions from winners at 1.0 and losers at 0.3, giving more weight t
 
 ### Stage 2: value fine-tune
 
-Using the fine-tuned Ogerpon–Hydrapple BC model, I generated games and fitted both critics to their outcomes while keeping the policy frozen. PPO started from this value-tuned Ogerpon–Hydrapple checkpoint, with value estimates calibrated to states the policy visits.
+Using the fine-tuned Ogerpon–Hydrapple BC model, I generated games and fitted both critics to their outcomes while keeping the policy frozen. PPO started from this value-tuned Ogerpon–Hydrapple checkpoint.
 
 ### Stage 3: PPO
 
@@ -100,7 +100,7 @@ Each observed or mutated list uses its archetype's BC model, shared across that 
 
 For mutations, I start from each archetype's most common list and perform 5–10 replacement steps. Replacements come from cards observed within that archetype, capped at the largest count seen in any one list. The engine validates each resulting 60-card deck before inclusion.
 
-Terminal rewards are +1 for wins, −1 for losses and 0 for draws. Clipping discourages abrupt policy changes, value regression improves return estimates, and the entropy bonus encourages exploration of alternative actions. The oracle critic supplies generalized advantage estimates. Prize shaping and a penalty for drifting from the cloning policy anneal to zero over eight updates.
+Terminal rewards are +1 for wins, −1 for losses and 0 for draws. I used γ = 0.997, λ = 0.95, clipping 0.2 and learning rate 1e-4. Clipping limits policy changes, value regression fits returns, and entropy encourages exploration. The oracle critic supplies generalized advantage estimates. Prize shaping and a penalty for drifting from the cloning policy anneal to zero over eight updates.
 
 **Why such a large rollout?** I first increased the decisions collected per update from 131k to 524k and saw the training win-rate plateau rise. That result prompted a direct jump to 8.39 million, sixteen times the previous rollout.
 
