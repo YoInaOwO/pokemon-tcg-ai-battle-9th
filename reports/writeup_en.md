@@ -50,7 +50,7 @@ All 1,267 cards have 207 static features in the same format; fields that do not 
 | Ability and Trainer effects | 32 | Draw, search, attach Energy, heal, accelerate evolution; usage limits and effect magnitudes |
 | Two attacks | 2 × 59 | Damage, Energy costs, coin flips and damage scaling with Energy or Prizes |
 
-I extract effect fields from card text using rules and stored corrections. The model maps the card features to 64 values and adds a vector learned separately for each card. This preserves card identity even when effect features match. During training, ID dropout sometimes removes that separate vector, encouraging use of the shared features. These features cannot encode every rule.
+Rule-based text parsing and stored corrections supply the effect fields. The model projects all card features to 64 values and adds a vector learned separately for each card, preserving identity when effect features match. ID dropout sometimes removes that vector during training.
 
 Card representations combine with game information:
 
@@ -65,7 +65,11 @@ Card representations combine with game information:
 
 Opponent belief estimates the opposing archetype. I match publicly revealed cards against replay decklists, weight by frequency and overlap, then aggregate into probabilities over 14 archetypes plus “other”. BC dropout sometimes replaces this distribution with “unknown”.
 
-The probe supplies immediate consequences for comparing actions. For eligible main-phase, single-selection decisions, it executes up to 64 candidates in temporary engine states, follows forced continuations and branches on coin flips within fixed limits. It appends 28 features to each option, including damage, knockouts, Prize gains, hand/deck count changes and changes in legal attacks.
+The static features describe a card's effects, but the policy still needs to know what they mean in the current position. Engine lookahead supplies those consequences directly, reducing the need to learn rule interactions from replay examples alone.
+
+For eligible main-phase, single-selection decisions, I test up to 64 candidates in separate temporary engine states. The probe compares each result with the starting position, follows forced continuations and branches on coin flips. Expansion stops at a player choice, game end or a fixed computational limit.
+
+The resulting 28 features cover immediate damage, knockouts, Prize and hand/deck changes; probability-weighted outcomes across branches; and newly legal attacks. They enter the action representation during both training and play. The policy learns to weigh these outcomes against setup and resource needs when choosing an action.
 
 Consider attaching Energy to Hydrapple. The model receives both boards, card zones, global state, history, selection context and all legal candidates together. Hydrapple's board token combines 32 state values with four 64-value card representations: Pokémon, first Tool and first two Energy cards. The resulting 288 values are projected to 384. Cross-attention lets each candidate read the full state. The attachment's probe features can flag an unlocked attack, while hand resources and opposing threats help the policy compare it with other legal moves.
 
@@ -73,7 +77,7 @@ Consider attaching Energy to Hydrapple. The model receives both boards, card zon
 
 ### Stage 1: behavioural cloning
 
-I trained BC on replays from 3–12 August. The shared model learned to imitate recorded decisions from both players across all deck archetypes. I then initialized each archetype model from that checkpoint and fine-tuned the full network at a lower learning rate, using only decisions made while playing that archetype. Different exact decklists within an archetype contributed to the same model.
+I trained BC on replays from 3–12 August. The shared model learned to imitate recorded decisions from both players across all deck archetypes. I then initialized each archetype model from that checkpoint and fine-tuned the full network at a lower learning rate, using only decisions made while playing that archetype.
 
 I weighted decisions from winners at 1.0 and losers at 0.3, giving more weight to recent games and stronger players.
 
@@ -96,7 +100,7 @@ Each observed or mutated list uses its archetype's BC model, shared across that 
 
 For mutations, I start from each archetype's most common list and perform 5–10 replacement steps. Replacements come from cards observed within that archetype, capped at the largest count seen in any one list. The engine validates each resulting 60-card deck before inclusion.
 
-Terminal rewards are +1 for wins, −1 for losses and 0 for draws. Clipping discourages abrupt policy changes, value regression improves return estimates, and the entropy bonus encourages exploration of alternative actions. The oracle critic supplies generalized advantage estimates. I used γ = 0.997, λ = 0.95, clipping 0.2 and learning rate 1e-4. Prize shaping and a penalty for drifting from the cloning policy anneal to zero over eight updates.
+Terminal rewards are +1 for wins, −1 for losses and 0 for draws. Clipping discourages abrupt policy changes, value regression improves return estimates, and the entropy bonus encourages exploration of alternative actions. The oracle critic supplies generalized advantage estimates. Prize shaping and a penalty for drifting from the cloning policy anneal to zero over eight updates.
 
 **Why such a large rollout?** I first increased the decisions collected per update from 131k to 524k and saw the training win-rate plateau rise. That result prompted a direct jump to 8.39 million, sixteen times the previous rollout.
 
