@@ -115,7 +115,7 @@ Restricting the absolute pre-game rating gap to 200 leaves 1,800 games at **53.5
 
 Within this group, I won **53 of 74 games against the identical decklist: 71.6% [60.5–80.6%]**. These games help assess how well the policy plays with the cards held fixed, though opponent strength still varies.
 
-BC imitates recorded decisions without directly rewarding stronger play. Although weaker than Kaggle opponents in most archetypes, my BC models still provided useful opponents for PPO training and a consistent benchmark for tracking the policy's progress.
+Although the win rates showed a gap between my BC models and Kaggle opponents, as imitation learning struggles to surpass those it imitates, these models still provided useful opponents for PPO training and a consistent benchmark for tracking the policy's progress.
 
 Against Espeon–Sylveon, my win rate was 12.5% over 32 games. Sylveon's Safeguard blocks attack damage from my main ex attackers. Meganium and Tapu Bulu can bypass it, but Espeon's Psych Out can knock out either from full HP. This gives the opposing deck answers to both my main attackers and their backups.
 
