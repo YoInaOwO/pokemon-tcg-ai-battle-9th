@@ -2,7 +2,7 @@
 
 **Subtitle:** Ninth place in the Simulation track with a 7.8M-parameter policy, without MCTS at play time.
 
-Thank you to the organizers and Kaggle for hosting, and to all participants for the matches.
+Thank you to the organizers, Kaggle and all participants.
 
 **TL;DR.** Both final submissions used the same decklist and model weights. Bounded engine lookahead supplies action consequences to a 7.8M-parameter policy that learns action sequencing and resource allocation. I trained it through behavioural cloning, value fine-tune and PPO against a pool based on the arena.
 
@@ -20,7 +20,7 @@ I chose a public list where Grass Energy helps draw cards, power attacks and inc
 
 Teal Dance attaches Energy to Ogerpon and draws a card; Hydrapple's Ripening Charge attaches to any friendly Pokémon and heals it. Meganium's Wild Growth doubles the Energy each Basic Grass provides. Forest allows Grass Pokémon to evolve on the turn they enter play, except on the player's first turn.
 
-The two main attacks depend on where the Energy is attached. Hydrapple's Syrup Storm counts Grass Energy across my board, while Ogerpon's Myriad Leaf Shower counts Energy on both Active Pokémon. Several Ogerpon provide more draws and attachments, but filling the bench can leave too little room for the evolution lines.
+Hydrapple's Syrup Storm counts Grass Energy across my board, while Ogerpon's Myriad Leaf Shower counts Energy on both Active Pokémon. Several Ogerpon provide more draws and attachments, but filling the bench can leave too little room for the evolution lines.
 
 Bug Catching Set finds Energy and Grass Pokémon; Dawn finds the three evolution stages. Meowth can find a needed Supporter, but gives the opponent another two-Prize target. Recovery cards help rebuild after knockouts, while Boss's Orders lets me choose which Pokémon to knock out. Meganium and Tapu Bulu provide non-ex attacks against defensive abilities, though using them takes resources away from the main attackers.
 
@@ -130,7 +130,7 @@ Among games with a rating gap ≤200, I won **53 of 74 games against the identic
 
 Although the win rates showed a gap between my BC models and Kaggle opponents, as imitation learning struggles to surpass those it imitates, these models still provided useful opponents for PPO training and a consistent benchmark for tracking the policy's progress.
 
-Against Espeon–Sylveon, my win rate was 12.5% over 32 games. Sylveon's Safeguard blocks attack damage from my main ex attackers. Meganium and Tapu Bulu can bypass it, but Espeon's Psych Out can knock out either from full HP. This gives the opposing deck answers to both my main attackers and their backups.
+Against Espeon–Sylveon, my win rate was 12.5% over 32 games. Sylveon's Safeguard blocks attack damage from my main ex attackers. Meganium and Tapu Bulu can bypass it, but Espeon's Psych Out can knock out either from full HP.
 
 ## 6. What I tried that did not work
 
